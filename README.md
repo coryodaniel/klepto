@@ -9,6 +9,7 @@ A mean little DSL'd capybara (poltergeist) based web crawler that stuffs data in
 * All the fun of capybara
 * Scrape multiple pages with a single bot
 * Scrape individuals pages with multiple 'crawlers', see Bieber example.
+* Test coverage!
 
 ## Usage
 Say you want a bunch of Bieb tweets! How is there not profit in that?
@@ -82,9 +83,11 @@ end
 @bot.start! 
 ```
 
+All your content are belong to us.
 
 
-## TODOs
+
+## Stuff I'm going to add.
 
 event handlers...
 --------------------

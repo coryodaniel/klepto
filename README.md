@@ -121,7 +121,7 @@ Page Assertions
       end    
     end
 
-Cookie Stufing
+Cookie Stuffing
 -------------------
 
     cookies({

@@ -20,9 +20,7 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
   syntax :css
   
   # Send some headers, confuse everyone.
-  headers({
-    'Referer'     => 'http://www.twitter.com'
-  })  
+  headers 'Referer' => 'http://www.twitter.com'
 
   # The more the merrier. It takes a *splat.
   urls  'https://twitter.com/justinbieber'
@@ -31,20 +29,38 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
   crawl 'body' do
     # The default handler is to call .text on the scraped node.
     scrape "h1.fullname", :name
+
+    # Scrape finds the first matching element for the given selector within
+    # the scope above (here: 'body')
     scrape '.username span.screen-name', :username
+
+    # Scrape all matching elements with #scrape_all
+    scrape_all 'span.url a' do |nodes|
+      {
+        links: nodes.map{|n| n[:href]}
+      }
+    end
+
+    # Each 'match' of the crawlers selector (here: 'body') will have the 
+    #   content from 'scrape' passed in as a hash
     save do |params|
       user = User.find_by_name(params[:username]) || User.new
       user.update_attributes params
     end
   end
 
+  # Get dem tweets
   crawl 'li.stream-item' do
+    # Passing no parameters to scrape will set the context to be the
+    #  outer matched crawled element (here: 'li.stream-item')
     scrape do |node|
       {:twitter_id => node['data-item-id']}
     end
     
+    # Put '.content p' into params[:content]
     scrape '.content p', :content
     
+    # Pass a block for more control
     scrape '._timestamp' do |node|
       {timestamp: node['data-time']}
     end
@@ -53,6 +69,8 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
       {permalink: node[:href]}
     end
         
+    # Each 'match' of the crawlers selector (here: 'li.stream-item') will have the 
+    #   content from 'scrape' passed in as a hash        
     save do |params|
       tweet = Tweet.find_by_twitter_id(params[:twitter_id]) || Tweet.new
       tweet.update_attributes params
@@ -60,7 +78,8 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
   end  
 end
 
-@bot.start! #sweet victory, heart throb.
+#start that bot for some sweet victory, heart throb.
+@bot.start! 
 ```
 
 

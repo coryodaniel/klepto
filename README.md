@@ -13,55 +13,55 @@ A mean little DSL'd capybara (poltergeist) based web crawler that stuffs data in
 ## Usage
 Say you want a bunch of Bieb tweets! How is there not profit in that?
 
-    ```ruby
-    # Make a bot
-    @bot = Klepto::Bot.new do
-      # Set your selector syntax. You can change to :xpath if you are 40+ or love C#.
-      syntax :css
-      
-      # Send some headers, confuse everyone.
-      headers({
-        'Referer'     => 'http://www.twitter.com'
-      })  
+  ```ruby
+  # Make a bot
+  @bot = Klepto::Bot.new do
+    # Set your selector syntax. You can change to :xpath if you are 40+ or love C#.
+    syntax :css
+    
+    # Send some headers, confuse everyone.
+    headers({
+      'Referer'     => 'http://www.twitter.com'
+    })  
 
-      # The more the merrier. It takes a *splat.
-      urls  'https://twitter.com/justinbieber'
+    # The more the merrier. It takes a *splat.
+    urls  'https://twitter.com/justinbieber'
 
-      # Crawl the body of the page to get the user info
-      crawl 'body' do
-        # The default handler is to call .text on the scraped node.
-        scrape "h1.fullname", :name
-        scrape '.username span.screen-name', :username
-        save do |params|
-          user = User.find_by_name(params[:username]) || User.new
-          user.update_attributes params
-        end
+    # Crawl the body of the page to get the user info
+    crawl 'body' do
+      # The default handler is to call .text on the scraped node.
+      scrape "h1.fullname", :name
+      scrape '.username span.screen-name', :username
+      save do |params|
+        user = User.find_by_name(params[:username]) || User.new
+        user.update_attributes params
       end
-
-      crawl 'li.stream-item' do
-        scrape do |node|
-          {:twitter_id => node['data-item-id']}
-        end
-        
-        scrape '.content p', :content
-        
-        scrape '._timestamp' do |node|
-          {timestamp: node['data-time']}
-        end
-
-        scrape '.time a' do |node|
-          {permalink: node[:href]}
-        end
-            
-        save do |params|
-          tweet = Tweet.find_by_twitter_id(params[:twitter_id]) || Tweet.new
-          tweet.update_attributes params
-        end
-      end  
     end
 
-    @bot.start! #sweet victory, heart throb.
-    ```
+    crawl 'li.stream-item' do
+      scrape do |node|
+        {:twitter_id => node['data-item-id']}
+      end
+      
+      scrape '.content p', :content
+      
+      scrape '._timestamp' do |node|
+        {timestamp: node['data-time']}
+      end
+
+      scrape '.time a' do |node|
+        {permalink: node[:href]}
+      end
+          
+      save do |params|
+        tweet = Tweet.find_by_twitter_id(params[:twitter_id]) || Tweet.new
+        tweet.update_attributes params
+      end
+    end  
+  end
+
+  @bot.start! #sweet victory, heart throb.
+  ```
 
 
 

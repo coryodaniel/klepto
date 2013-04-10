@@ -41,7 +41,7 @@ module Klepto
           elsif first_or_all == :first
             node = selection.first(syntax, selector)
             if assignee
-              params[assignee] = node.text
+              params[assignee] = node.try(:text)
             else
               attribs = handler.call node
               params.merge!( attribs )
@@ -55,11 +55,13 @@ module Klepto
         @resources << params
       end
 
+      @resources
+    end
+
+    def persist!
       if @resource_handler
         @resources.each {|resource| @resource_handler.call(resource)}
       end
-
-      @resources
     end
 
     protected

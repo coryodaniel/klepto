@@ -8,26 +8,29 @@ ActiveRecord::Migration.verbose = false
 
 class TestMigration < ActiveRecord::Migration
   def self.up
-    create_table :stores, :force => true do |t|
-      t.string :name
-      t.integer :savings
+    create_table :tweets, :force => true do |t|
+      t.string :content
+      t.string :twitter_id
+      t.integer :timestamp
+      t.string :permalink
     end
 
-    create_table :coupons, :force => true do |t|
-      t.string :remote_id
-      t.string :title
-      t.string :url
-      t.string :description
-    end 
+    create_table :users, :force => true do |t|
+      t.string :name
+      t.string :username
+    end
   end
 
   def self.down
-    drop_table :coupons
-    drop_table :stores
+    drop_table :tweets
+    drop_table :users
   end
 end
 
-class Coupon < ActiveRecord::Base
+class Tweet < ActiveRecord::Base
+  validates_presence_of :timestamp, :twitter_id, :permalink, :content
 end
-class Store < ActiveRecord::Base
+
+class User < ActiveRecord::Base
+  validates_presence_of :username, :name
 end

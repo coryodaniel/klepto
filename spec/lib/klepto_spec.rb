@@ -12,37 +12,39 @@ describe 'Scraping pages', :skip => false do
       syntax :css
 
       headers({
-        'Referer'     => 'http://www.retailmenot.com',
+        'Referer'     => 'https://twitter.com',
         'User-Agent'  => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_2) AppleWebKit/534.51.22 (KHTML, like Gecko) Version/5.1.1 Safari/534.51.22"
       })  
 
-      urls  'http://www.retailmenot.com/view/gap.com'
+      urls  'https://twitter.com/justinbieber'
 
       crawl 'body' do
-        scrape "#store_info h1", :name
-        scrape '.coupon_count strong', :savings
+        scrape "h1.fullname", :name
+        scrape '.username span.screen-name', :username
         save do |params|
-          store = Store.find_by_name(params[:name]) || Store.new
-          store.update_attributes params
+          user = User.find_by_name(params[:username]) || User.new
+          user.update_attributes params
         end
       end
 
-      crawl 'li.offer' do
+      crawl 'li.stream-item' do
         scrape do |node|
-          {:remote_id => node['data-offerid']}
+          {:twitter_id => node['data-item-id']}
         end
-        scrape 'h3 a', :title
-        scrape '.description p' do |node|
-          {description: node.text.downcase.capitalize}
+        
+        scrape '.content p', :content
+
+        scrape '._timestamp' do |node|
+          {timestamp: node['data-time']}
         end
 
-        scrape 'h3 a' do |node|
-          {url: node[:href]}
+        scrape '.time a' do |node|
+          {permalink: node[:href]}
         end
             
         save do |params|
-          coupon = Coupon.find_by_remote_id(params[:remote_id]) || Coupon.new
-          coupon.update_attributes params
+          tweet = Tweet.find_by_twitter_id(params[:twitter_id]) || Tweet.new
+          tweet.update_attributes params
         end
       end  
     end
@@ -52,11 +54,11 @@ describe 'Scraping pages', :skip => false do
 
   it 'should have collected some resources' do
     @bot.crawlers.should have(2).crawlers
-    @bot.crawlers.first.resources.should have(1).stores
+    @bot.crawlers.first.resources.should have(1).user
   end
 
   it 'should persist resources' do
-    Store.count.should be(1)
-    Coupon.count.should_not be(0)
+    User.count.should be(1)
+    Tweet.count.should_not be(0)
   end
 end  

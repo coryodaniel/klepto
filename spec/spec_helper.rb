@@ -23,8 +23,8 @@ end
 RSpec.configure do |config|
   config.before(:all) { TestMigration.up }
   config.after(:each){ 
-    Coupon.delete_all
-    Store.delete_all
+    User.delete_all
+    Tweet.delete_all
   }
   config.after(:all) { TestMigration.down }
   config.treat_symbols_as_metadata_keys_with_true_values = true

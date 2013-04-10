@@ -1,0 +1,15 @@
+sqlite3: 
+  adapter: sqlite3 
+  database: ":memory:"
+postgresql: 
+  adapter: postgresql
+  database: klepto_test
+  username: klepto
+  password: klepto
+  min_messages: WARNING
+mysql: 
+  adapter: mysql 
+  host: localhost 
+  database: klepto_test
+  username: klepto
+  password: klepto

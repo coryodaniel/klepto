@@ -1,0 +1,114 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://example.com/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      accept:
+      - ! '*/*'
+      user-agent:
+      - Ruby
+  response:
+    status:
+      code: 302
+      message: Found
+    headers:
+      location:
+      - http://www.iana.org/domains/example/
+      server:
+      - BigIP
+      connection:
+      - Keep-Alive
+      content-length:
+      - '0'
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: '1.0'
+  recorded_at: Wed, 10 Apr 2013 06:51:05 GMT
+- request:
+    method: get
+    uri: http://www.iana.org/domains/example/
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      accept:
+      - ! '*/*'
+      user-agent:
+      - Ruby
+  response:
+    status:
+      code: 302
+      message: FOUND
+    headers:
+      date:
+      - Wed, 10 Apr 2013 06:51:05 GMT
+      server:
+      - Apache/2.2.3 (CentOS)
+      location:
+      - http://www.iana.org/domains/example
+      content-length:
+      - '0'
+      connection:
+      - close
+      content-type:
+      - text/html; charset=utf-8
+    body:
+      encoding: US-ASCII
+      string: ''
+    http_version: '1.1'
+  recorded_at: Wed, 10 Apr 2013 06:51:05 GMT
+- request:
+    method: get
+    uri: http://www.iana.org/domains/example
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      accept:
+      - ! '*/*'
+      user-agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Wed, 10 Apr 2013 06:51:05 GMT
+      server:
+      - Apache/2.2.3 (CentOS)
+      last-modified:
+      - Fri, 04 Jan 2013 01:17:22 GMT
+      vary:
+      - Accept-Encoding
+      connection:
+      - close
+      transfer-encoding:
+      - chunked
+      content-type:
+      - text/html; charset=UTF-8
+    body:
+      encoding: US-ASCII
+      string: ! "<!doctype html>\n<html>\n<head>\n\t<title>Example Domain</title>\n\n\t<meta
+        charset=\"utf-8\" />\n\t<meta http-equiv=\"Content-type\" content=\"text/html;
+        charset=utf-8\" />\n\t<meta name=\"viewport\" content=\"width=device-width,
+        initial-scale=1\" />\n\t<style type=\"text/css\">\n\tbody {\n\t\tbackground-color:
+        #f0f0f2;\n\t\tmargin: 0;\n\t\tpadding: 0;\n\t\tfont-family: \"Open Sans\",
+        \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n\t\t\n\t}\n\tdiv {\n\t\twidth:
+        600px;\n\t\tmargin: 5em auto;\n\t\tpadding: 3em;\n\t\tbackground-color: #fff;\n\t\tborder-radius:
+        1em;\n\t}\n\ta:link, a:visited {\n\t\tcolor: #38488f;\n\t\ttext-decoration:
+        none;\n\t}\n\t@media (max-width: 600px) {\n\t\tbody {\n\t\t\tbackground-color:
+        #fff;\n\t\t}\n\t\tdiv {\n\t\t\twidth: auto;\n\t\t\tmargin: 0 auto;\n\t\t\tborder-radius:
+        0;\n\t\t\tpadding: 1em;\n\t\t}\n\t}\n\t</style>\t\n</head>\n\n<body>\n<div>\n\t<h1>Example
+        Domain</h1>\n\t<p>This domain is established to be used for illustrative examples
+        in documents. You do not need to\n\t\tcoordinate or ask for permission to
+        use this domain in examples, and it is not available for\n\t\tregistration.</p>\n\t<p><a
+        href=\"http://www.iana.org/domains/special\">More information...</a></p>\n</div>\n</body>\n</html>\n"
+    http_version: '1.1'
+  recorded_at: Wed, 10 Apr 2013 06:51:05 GMT
+recorded_with: VCR 2.4.0

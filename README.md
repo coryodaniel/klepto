@@ -56,7 +56,6 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
   # If you want to do something with each resource, like stick it in AR
   #   go for it here...
   after_crawl do |resource|
-
     @user = User.new
     @user.name = resource[:name]
     @user.username = resource[:username]

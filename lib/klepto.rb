@@ -1,10 +1,8 @@
-require 'docile'
 require 'open-uri'
 require 'logger'
 require "capybara"
 require "capybara/dsl"
 require 'capybara/poltergeist'
-require 'pp'
 
 Capybara.run_server = false
 

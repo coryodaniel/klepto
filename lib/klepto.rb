@@ -21,6 +21,6 @@ module Klepto
 end
 
 require 'klepto/version'
-require 'klepto/crawler'
+require 'klepto/config'
 require 'klepto/browser'
-require 'klepto/bot'
+require 'klepto/structure'

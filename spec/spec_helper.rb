@@ -28,5 +28,5 @@ RSpec.configure do |config|
   }
   config.after(:all) { TestMigration.down }
   config.treat_symbols_as_metadata_keys_with_true_values = true
-  config.filter_run_excluding :skip => true
+  #config.filter_run_including :only => true
 end

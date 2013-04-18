@@ -9,7 +9,7 @@ ActiveRecord::Migration.verbose = false
 class TestMigration < ActiveRecord::Migration
   def self.up
     create_table :tweets, :force => true do |t|
-      t.string :content
+      t.string :tweet
       t.string :twitter_id
       t.integer :timestamp
       t.string :permalink
@@ -28,7 +28,7 @@ class TestMigration < ActiveRecord::Migration
 end
 
 class Tweet < ActiveRecord::Base
-  validates_presence_of :timestamp, :twitter_id, :permalink, :content
+  validates_presence_of :timestamp, :twitter_id, :permalink, :tweet
 end
 
 class User < ActiveRecord::Base

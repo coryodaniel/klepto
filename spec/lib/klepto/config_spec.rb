@@ -20,4 +20,11 @@ describe Klepto::Config do
   pending 'should be able to set assertions'
   pending 'should be able to set on_http_status handler'
   pending 'should be able to set on_failed_assertion handler'
+  pending 'should be a sexier config' do
+    # Klepto::Structure.crawl("https://twitter.com/justinbieber"){
+    #   config.headers({
+    #     "Referer" => "http://example.com"
+    #   })
+    # }
+  end
 end

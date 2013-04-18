@@ -114,15 +114,12 @@ config = {
 
 
 ## Stuff I'm going to add.
-sexier config...
-------------------
+Cookie Stuffing
+-------------------
 ```ruby
-Klepto::Structure.crawl("https://twitter.com/justinbieber"){
-  config.headers({
-    "Referer" => "http://example.com"
-  })
-}
-
+cookies({
+  'Has Fun' => true
+})  
 ```
 
 event handlers...
@@ -131,7 +128,8 @@ event handlers...
 on_http_status(500,404) do |response, bot|
   email('admin@example.com', bot.status, bot.summary)
 end
-on_assertion_failure{ |response, bot| }
+on_http_status('3xx') do |response, bot|
+end
 ```
 
 Pre-req Steps
@@ -149,12 +147,5 @@ Page Assertions
 assertions do
   #presence and value assertions...
 end
-```
-
-Cookie Stuffing
--------------------
-```ruby
-cookies({
-  'Has Fun' => true
-})  
+on_assertion_failure{ |response, bot| }
 ```

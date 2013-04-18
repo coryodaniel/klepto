@@ -72,7 +72,6 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
 # you could do it here...
 @structures.each do |structure|
   pp structure
-  TwitterClone.create(structure) 
 end
 ```
 

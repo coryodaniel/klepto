@@ -56,6 +56,7 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
   # If you want to do something with each resource, like stick it in AR
   #   go for it here...
   after_crawl do |resource|
+
     @user = User.new
     @user.name = resource[:name]
     @user.username = resource[:username]
@@ -64,12 +65,14 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
     resource[:tweets].each do |tweet|
       Tweet.create(tweet)
     end
-  end     
+  end #=> Profit!
 }
 
-#An array of hashes is returned, store those bad boys you heart throb!
+# An array of hashes is returned, so if you wanted to do something else 
+# you could do it here...
 @structures.each do |structure|
-  TwitterClone.create(structure) #=> Profit!
+  pp structure
+  TwitterClone.create(structure) 
 end
 ```
 
@@ -131,7 +134,6 @@ on_http_status(500,404) do |response, bot|
   email('admin@example.com', bot.status, bot.summary)
 end
 on_assertion_failure{ |response, bot| }
-on_invalid_resource{ |resource, bot| }
 ```
 
 Pre-req Steps

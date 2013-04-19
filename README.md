@@ -1,6 +1,6 @@
 # Klepto
 
-A mean little DSL'd capybara (poltergeist) based web crawler that stuffs data into ActiveRecord or wherever(TM).
+A mean little DSL'd capybara (poltergeist) based web scraper that structures data into ActiveRecord or wherever(TM).
 
 ## Features 
 
@@ -8,7 +8,6 @@ A mean little DSL'd capybara (poltergeist) based web crawler that stuffs data in
 * Full javascript processing via phantomjs / poltergeist
 * All the fun of capybara
 * Scrape multiple pages with a single bot
-* Scrape individuals pages with multiple 'crawlers', see Bieber example.
 * Pretty nifty DSL
 * Test coverage!
 
@@ -16,8 +15,8 @@ A mean little DSL'd capybara (poltergeist) based web crawler that stuffs data in
 Say you want a bunch of Bieb tweets! How is there not profit in that?
 
 ```ruby
-# Crawl a web site or multiple. Structure#crawl takes a *splat!
-@structures = Klepto::Bot.new("https://twitter.com/justinbieber"){
+# Fetch a web site or multiple. Bot#new takes a *splat!
+@bot = Klepto::Bot.new("https://twitter.com/justinbieber"){
   # By default, it uses CSS selectors
   name      'h1.fullname'
 
@@ -87,10 +86,10 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
   end #=> Profit!
 }
 
-# An array of hashes is returned, so if you wanted to do something else 
+# You can get an array of hashes(resources), so if you wanted to do something else 
 # you could do it here...
-@structures.each do |structure|
-  pp structure
+@bot.resources.each do |resource|
+  pp resource
 end
 ```
 
@@ -120,6 +119,10 @@ end
 
 
 ## Stuff I'm going to add.
+Async 
+--------
+-> https://github.com/igrigorik/em-synchrony
+
 Cookie Stuffing
 -------------------
 ```ruby

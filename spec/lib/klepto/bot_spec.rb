@@ -27,7 +27,7 @@ describe Klepto::Bot do
       end
     end
 
-    describe 'crawling multiple pages' do
+    describe 'structuring multiple pages' do
       before(:each) do
         @bot = Klepto::Bot.new("https://twitter.com/justinbieber"){
           config.urls "https://twitter.com/ladygaga"

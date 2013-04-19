@@ -17,13 +17,6 @@ EOS
       __process!
     end
 
-    def __dispatch_handlers_for(status_code)
-      if status_code.is_a?(Fixnum)
-      elsif status_code.is_a?(Symbol)
-      elsif status_code.is_a?(String)
-      end
-    end
-
     def __process!
       @resources = []
 

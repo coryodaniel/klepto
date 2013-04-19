@@ -13,7 +13,15 @@ module Klepto
       }
       @before_handlers  = {:each => []}
       @status_handlers  = {}
+      @handlers = {}
     end
+
+    # TODO: DRY up handlers...
+    # def dispatch(group, handler, *args)
+    #   @handlers[group] ||= {}
+    #   @handlers[group][handler] ||= []
+    #   @handlers[group][handler].each{|handler| handler.call(*args)}
+    # end
 
     def headers(_headers=nil)
       @headers = _headers if _headers

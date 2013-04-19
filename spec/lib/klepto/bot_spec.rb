@@ -172,5 +172,49 @@ describe Klepto::Bot do
         statuses.should include 'got a page'
       end
     end
+
+
+    describe 'creating a bot with a node limit' do
+      before(:each) do
+        @bot = Klepto::Bot.new("https://twitter.com/justinbieber"){
+          config.headers({
+            'Referer'     => 'http://www.twitter.com',
+            'X-Sup-Dawg'  => "Yo, What's up?"
+          })
+
+          # Structure that stuff
+          name      'h1.fullname'
+          username  "span.screen-name"
+          
+          tweets    'li.stream-item', :as => :collection, :limit => 5 do
+            twitter_id do |node|
+              node['data-item-id']
+            end
+            tweet '.content p', :css
+            timestamp '._timestamp', :attr => 'data-time'
+            permalink '.time a', :css, :attr => :href
+          end
+
+          config.after(:each) do |resource|
+            @user = User.new
+            @user.name = resource[:name]
+            @user.username = resource[:username]
+            @user.save
+
+            resource[:tweets].each do |tweet|
+              Tweet.create(tweet)
+            end
+          end 
+        }
+        @structure = @bot.resources
+      end
+
+      it 'should limit the nodes structured' do
+        User.count.should be(1)
+        Tweet.count.should be(5)
+      end
+    end
+
+
   end
 end

@@ -84,7 +84,8 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
   end      
 
   # Multiple Nested structures? Let klepto know this is a collection of resources
-  tweets    'li.stream-item', :as => :collection do
+  # Does bieber, tweet to much? Maybe. Lets only get the new stuff kids crave.
+  tweets    'li.stream-item', :as => :collection, :limit => 10 do
     twitter_id do |node|
       node['data-item-id']
     end
@@ -188,16 +189,6 @@ Cookie Stuffing
 cookies({
   'Has Fun' => true
 })  
-```
-
-event handlers...
---------------------
-```ruby
-on_http_status(500,404) do |response, bot|
-  email('admin@example.com', bot.status, bot.summary)
-end
-on_http_status('3xx') do |response, bot|
-end
 ```
 
 Pre-req Steps

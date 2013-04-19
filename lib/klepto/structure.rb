@@ -20,17 +20,20 @@ module Klepto
     #options[:as]     :collection, :resource
     #options[:match]  :first, :all
     #options[:syntax] :xpath, :css
+    #options[:limit]  Integer elements to structure when :match => :all or :as => :collection
     def method_missing(meth, *args, &block)
       options = args.last.is_a?(Hash) ? args.pop : {}
       options[:syntax]  ||= :css
       options[:match]   ||= :first
       options[:attr]    ||= nil
+      options[:limit]   ||= nil
       selector          = args.shift
 
       if options[:as] == :collection
         @_hash[meth] = []
         result = _context.all( options[:syntax], selector )      
-        result.each do |ele|
+        options[:limit] ||= result.length
+        result[0, options[:limit]].each do |ele|
           @_hash[meth].push Structure.build(ele, self, &block)
         end 
       elsif options[:as] == :resource
@@ -45,7 +48,8 @@ module Klepto
 
         if options[:match] == :all
           @_hash[meth] = []
-          result.each do |node|
+          options[:limit] ||= result.length
+          result[0, options[:limit]].each do |node|
             @_hash[meth] << block.call( node )
           end
         else
@@ -55,7 +59,8 @@ module Klepto
         result = _context.send( options[:match], options[:syntax], selector )
         if options[:match] == :all
           @_hash[meth] = []
-          result.each do |node|
+          options[:limit] ||= result.length
+          result[0, options[:limit]].each do |node|
             @_hash[meth] << (node[options[:attr]] || node.try(:text))
           end        
         else

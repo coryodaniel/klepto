@@ -52,7 +52,7 @@ EOS
         end
 
         # If the page was not a failure or if not aborting, structure that bad boy.
-        if !browser.failure? || (browser.failure? && !config.abort_on_failure?)
+        if browser.success? || (browser.failure? && !config.abort_on_failure?)
           resources << __structure(browser.page)
         else
           config.after_handlers[:abort].each do |ah|

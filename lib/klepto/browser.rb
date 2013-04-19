@@ -14,9 +14,12 @@ module Klepto
       page.status_code
     end
 
-    # 4xx or 5xx
+    def success?
+      page.status_code == 200
+    end
+    
     def failure?
-      ['4xx', '5xx'].include? statusx
+      !success?
     end
 
     def statusx

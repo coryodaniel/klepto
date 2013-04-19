@@ -6,7 +6,11 @@ module Klepto
       @headers = {}
       @abort_on_failure = true
       @urls    = []
-      @after_handlers   = {:each => [], :get => []}
+      @after_handlers   = {
+        :each => [], 
+        :get  => [],
+        :abort=> []
+      }
       @before_handlers  = {:each => []}
       @status_handlers  = {}
     end
@@ -14,6 +18,10 @@ module Klepto
     def headers(_headers=nil)
       @headers = _headers if _headers
       @headers
+    end
+
+    def abort_on_failure?
+      !!@abort_on_failure
     end
 
     # 4xx, 5xx

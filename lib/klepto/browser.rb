@@ -14,6 +14,11 @@ module Klepto
       page.status_code
     end
 
+    # 4xx or 5xx
+    def failure?
+      ['4xx', '5xx'].include? statusx
+    end
+
     def statusx
       page.status_code.to_s[0..-3] + "xx"
     end

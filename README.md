@@ -11,6 +11,47 @@ A mean little DSL'd capybara (poltergeist) based web scraper that structures dat
 * Pretty nifty DSL
 * Test coverage!
 
+## Installing
+You need at least PhantomJS 1.8.1.  There are *no other external
+dependencies* (you don't need Qt, or a running X server, etc.)
+
+### Mac ###
+
+* *Homebrew*: `brew install phantomjs`
+* *MacPorts*: `sudo port install phantomjs`
+* *Manual install*: [Download this](http://code.google.com/p/phantomjs/downloads/detail?name=phantomjs-1.8.1-macosx.zip&can=2&q=)
+
+### Linux ###
+
+* Download the [32
+bit](http://code.google.com/p/phantomjs/downloads/detail?name=phantomjs-1.8.1-linux-i686.tar.bz2&can=2&q=)
+or [64
+bit](http://code.google.com/p/phantomjs/downloads/detail?name=phantomjs-1.8.1-linux-x86_64.tar.bz2&can=2&q=)
+binary.
+* Extract the tarball and copy `bin/phantomjs` into your `PATH`
+
+### Windows ###
+* Download the [precompiled binary](http://phantomjs.org/download.html) for Windows
+
+### Manual compilation ###
+
+Do this as a last resort if the binaries don't work for you. It will
+take quite a long time as it has to build WebKit.
+
+* Download [the source tarball](http://code.google.com/p/phantomjs/downloads/detail?name=phantomjs-1.8.1-source.zip&can=2&q=)
+* Extract and cd in
+* `./build.sh`
+
+(See also the [PhantomJS building guide](http://phantomjs.org/build.html).)
+
+Then put klepto in your gemfile.
+
+```ruby
+gem 'klepto', '>= 0.2.5'
+```
+
+
+
 ## Usage (All your content are belong to us)
 Say you want a bunch of Bieb tweets! How is there not profit in that?
 
@@ -121,6 +162,11 @@ end
 }
 ```
 
+## Configuration Options
+* config.headers - Hash; Sets request headers
+* config.urls    - Array(String); Sets URLs to structure
+* config.abort_on_failure - Boolean(Default: true); Should structuring be aborted on 4xx or 5xx
+
 ## Callbacks & Processing
 
 * before
@@ -128,6 +174,8 @@ end
 * after
   * :each (resource, Hash) - called for each resource parsed
   * :get (page, Capybara::Node) - called after each HTTP GET
+  * :abort (page, Capybara::Node) - called after a 4xx or 5xx if config.abort_on_failure is true (default)
+
 
 ## Stuff I'm going to add.
 Async 

@@ -39,24 +39,34 @@ EOS
           config.dispatch_status_handlers(status, browser.page)
         end
 
-        structure = Structure.new(browser.page)
-
-        queue.each do |instruction|
-          if instruction[2]
-            structure.send instruction[0], *instruction[1], &instruction[2]
-          else
-            structure.send instruction[0], *instruction[1]
+        if !browser.failure? || (browser.failure? && !config.abort_on_failure?)
+          resources << __structure(browser.page)
+        else
+          config.after_handlers[:abort].each do |ah|
+            ah.call(browser.page)
           end
         end
-
-        config.after_handlers[:each].each do |ah|
-          ah.call(structure._hash)
-        end
-
-        resources << structure._hash
       end
 
       @resources
+    end
+
+    def __structure(context)
+      structure = Structure.new(context)
+
+      queue.each do |instruction|
+        if instruction[2]
+          structure.send instruction[0], *instruction[1], &instruction[2]
+        else
+          structure.send instruction[0], *instruction[1]
+        end
+      end
+
+      config.after_handlers[:each].each do |ah|
+        ah.call(structure._hash)
+      end
+
+      structure._hash
     end
 
     def method_missing(meth, *args, &block)

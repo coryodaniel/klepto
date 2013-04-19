@@ -72,6 +72,10 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
     puts "HOLY CRAP!"
   }
 
+  config.after(:get) do |page|
+    # This is fired after each HTTP GET. It receives a Capybara::Node
+  end  
+
   # If you want to do something with each resource, like stick it in AR
   #   go for it here...
   config.after do |resource|
@@ -117,6 +121,13 @@ end
 }
 ```
 
+## Callbacks & Processing
+
+* before
+  * n/a
+* after
+  * :each (resource, Hash) - called for each resource parsed
+  * :get (page, Capybara::Node) - called after each HTTP GET
 
 ## Stuff I'm going to add.
 Async 

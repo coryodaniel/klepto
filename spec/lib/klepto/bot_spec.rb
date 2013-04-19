@@ -76,6 +76,10 @@ describe Klepto::Bot do
             permalink '.time a', :css, :attr => :href
           end
 
+          config.after(:get) do |page|
+            StatusLog.create message: 'got a page'
+          end
+
           config.on_http_status('2xx'){
             StatusLog.create message: '2xx'
           }
@@ -120,6 +124,7 @@ describe Klepto::Bot do
         statuses.should_not include 'redirect'
         statuses.should include '200'
         statuses.should include '2xx'
+        statuses.should include 'got a page'
       end
     end
   end

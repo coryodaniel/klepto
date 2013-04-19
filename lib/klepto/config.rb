@@ -4,8 +4,9 @@ module Klepto
 
     def initialize
       @headers = {}
+      @abort_on_failure = true
       @urls    = []
-      @after_handlers   = {:each => []}
+      @after_handlers   = {:each => [], :get => []}
       @before_handlers  = {:each => []}
       @status_handlers  = {}
     end
@@ -13,6 +14,11 @@ module Klepto
     def headers(_headers=nil)
       @headers = _headers if _headers
       @headers
+    end
+
+    # 4xx, 5xx
+    def abort_on_failure(aof)
+      @abort_on_failure = aof
     end
 
     def on_http_status(*statuses,&block)
@@ -35,6 +41,11 @@ module Klepto
       @after_handlers[which] ||= []
       @after_handlers[which].push block
     end
+
+    def before(which, &block)
+      @before_handlers[which] ||= []
+      @before_handlers[which].push block
+    end    
 
     def url(*args)
       @urls += args

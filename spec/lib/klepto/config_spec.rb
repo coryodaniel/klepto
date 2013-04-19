@@ -14,6 +14,7 @@ describe Klepto::Config do
     @config.on_http_status('5xx','4xx'){
       "Its crazy."
     }
+    @config.abort_on_failure(false)
   end
 
   it 'should be able to set headers' do
@@ -37,7 +38,10 @@ describe Klepto::Config do
     @config.urls.should == ['http://example.com', 'http://www.iana.org']
   end
 
-  pending 'should be able to set before handlers'  
+  it 'should have an abort on 4xx/5xx option' do
+    @config.instance_variable_get("@abort_on_failure").should be false
+  end
+
   pending 'should be able to set cookies'
   pending 'should be able to set steps'
   pending 'should be able to set assertions'

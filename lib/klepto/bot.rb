@@ -25,6 +25,10 @@ EOS
 
         browser.set_headers config.headers
         browser.fetch! url
+
+        config.after_handlers[:get].each do |ah|
+          ah.call(browser.page)
+        end
         
         statuses = [browser.status, browser.statusx]
         statuses.push :redirect if url != browser.page.current_url

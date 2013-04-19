@@ -12,6 +12,9 @@ module Klepto
       instance_eval <<-EOS
 def queue; @queue; end;
 def resources; @resources; end;
+def method_missing(meth, *args, &block)
+  raise NoMethodError.new("undefined method: Klepto::Bot#" + meth.to_s)
+end
 EOS
 
       __process!

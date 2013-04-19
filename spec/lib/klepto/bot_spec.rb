@@ -118,6 +118,13 @@ describe Klepto::Bot do
         Tweet.count.should_not be(0)
       end
 
+      it 'should not have the DSL once its been processed' do
+        lambda{
+          @bot.i_dont_exist
+        }.should raise_error(NoMethodError)
+        
+      end
+
       it 'should have dispatched status handlers' do
         statuses = StatusLog.all.map(&:message)
 

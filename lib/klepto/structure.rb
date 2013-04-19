@@ -1,41 +1,20 @@
 module Klepto
   class Structure
    def self.build(_context=nil, _parent=nil, &block)
-      hb = Structure.new(_context, _parent)
-      hb.instance_eval &block
-      if hb._after_handler
-        hb._after_handler.call(hb._hash)
-      end
-
-      hb._hash
-    end
-
-    def self.crawl(*urls, &block)
-      config = urls.last.is_a?(Hash) ? urls.pop : {}
-      resources = []
-      urls.each do |url|
-        browser   = Klepto::Browser.new
-        browser.set_headers config[:headers]
-        browser.fetch! url
-        resources << Structure.build(browser.page, &block)
-      end 
-      resources
+      structure = Structure.new(_context, _parent)
+      structure.instance_eval &block
+      structure._hash
     end
 
     attr_reader :_parent
     attr_reader :_hash
     attr_reader :_context
-    attr_reader :_after_handler
 
     def initialize(_context=nil, _parent=nil)
       @_context  = _context
       @_parent   = _parent
       @_hash     = {}
       @_after_handler = nil
-    end
-
-    def after_crawl(&block)
-      @_after_handler = block
     end
 
     #options[:as]     :collection, :resource

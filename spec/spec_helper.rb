@@ -25,6 +25,7 @@ RSpec.configure do |config|
   config.after(:each){ 
     User.delete_all
     Tweet.delete_all
+    StatusLog.delete_all
   }
   config.after(:all) { TestMigration.down }
   config.treat_symbols_as_metadata_keys_with_true_values = true

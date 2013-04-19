@@ -17,7 +17,7 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
 
 ```ruby
 # Crawl a web site or multiple. Structure#crawl takes a *splat!
-@structures = Klepto::Structure.crawl("https://twitter.com/justinbieber"){
+@structures = Klepto::Bot.new("https://twitter.com/justinbieber"){
   # By default, it uses CSS selectors
   name      'h1.fullname'
 
@@ -53,9 +53,29 @@ Say you want a bunch of Bieb tweets! How is there not profit in that?
     permalink '.time a', :css, :attr => :href
   end     
 
+  # Set some headers, why not.
+  config.headers({
+    'Referer'     => 'http://www.twitter.com'
+  })  
+
+  # on_http_status can take a splat of statuses or ~statuses(4xx,5xx)
+  #   you can also have multiple handlers on a status
+  #   Note: Capybara automatically follows redirects, so the statuses 3xx
+  #   are never present. If you want to watch for a redirect pass see below
+  config.on_http_status(:redirect){
+    puts "Something redirected..."
+  }
+  config.on_http_status(200){
+    puts "Expected this, NBD."
+  }
+
+  config.on_http_status('5xx','4xx'){
+    puts "HOLY CRAP!"
+  }
+
   # If you want to do something with each resource, like stick it in AR
   #   go for it here...
-  after_crawl do |resource|
+  config.after do |resource|
     @user = User.new
     @user.name = resource[:name]
     @user.username = resource[:username]
@@ -79,7 +99,7 @@ end
 ```ruby
 @html = Capybara::Node::Simple.new(@html_string)
 @structure = Klepto::Structure.build(@html){
-  # inside the build method, everything works the same as Structure.crawl
+  # inside the build method, everything works the same as Bot.new
   name      'h1.fullname'
   username  'span.screen-name'
 
@@ -97,20 +117,6 @@ end
   end       
 }
 ```
-
-## Extra Configuration
-```ruby
-config = {
-  :headers => {
-    'Referer'     => 'http://www.twitter.com',
-    'X-Sup-Dawg'  => "Yo, What's up?"
-  }
-}
-@structures = Klepto::Structure.crawl("https://twitter.com/justinbieber",config){
-  #... yada, yada
-}
-```
-
 
 
 ## Stuff I'm going to add.

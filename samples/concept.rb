@@ -2,30 +2,41 @@
 require 'bundler/setup'
 require 'klepto'
 
-@structure = Klepto::Structure.crawl('https://twitter.com/justinbieber')
+Klepto::Bot.new do
   config.headers 'Referer' => 'http://www.twitter.com'
+  config.on_http_status('5xx','4xx'){
+    puts "HOLY CRAP!"
+  }
 
-  config.steps [
-    [:GET, 'https://twitter.com/login'],
-    [:POST,'https://twitter.com/sessions', 
-      { 
-        session: {
-          username_or_email: 'example',
-          password:'123456'
-        }
-      }
-    ]
-  ]
+  # If you want to do something with each resource, like stick it in AR
+  #   go for it here...
+  config.after do |resource|
+    @user = User.new
+    @user.name = resource[:name]
+    @user.username = resource[:username]
+    @user.save
+
+    resource[:tweets].each do |tweet|
+      Tweet.create(tweet)
+    end
+  end 
+
   config.urls 'https://twitter.com/justinbieber', 
               'https://twitter.com/ladygaga'
-  # config.cookies 'jsession' => 'abcdefg1234567890'        
-  # config.on_http_status(500,404){}
-  # assertions do
-  # end
-  # config.on_failed_assertion(){}
 
+  # config.steps [
+  #   [:GET, 'https://twitter.com/login'],
+  #   [:POST,'https://twitter.com/sessions', 
+  #     { 
+  #       session: {
+  #         username_or_email: 'example',
+  #         password:'123456'
+  #       }
+  #     }
+  #   ]
+  # ]
 
-  # Structur the content
+  # Structure the content
   name      'h1.fullname'
   username  '.username span.screen-name'
   links     'span.url a', :list, :attr => 'href'
@@ -43,8 +54,3 @@ require 'klepto'
     permalink '.time a', :css, :attr => :href
   end 
 end
-
-# @resources = @structure.parse! #=> Array[Hash]
-# @resources.each do |resource|
-#   User.create(resource)
-# end

@@ -19,12 +19,22 @@ class TestMigration < ActiveRecord::Migration
       t.string :name
       t.string :username
     end
+
+    create_table :status_logs, :force => true do |t|
+      t.string :message
+    end
   end
 
   def self.down
     drop_table :tweets
+    drop_table :status_logs
     drop_table :users
   end
+end
+
+
+class StatusLog < ActiveRecord::Base
+
 end
 
 class Tweet < ActiveRecord::Base

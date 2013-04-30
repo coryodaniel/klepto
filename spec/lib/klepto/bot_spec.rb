@@ -201,6 +201,19 @@ describe Klepto::Bot do
       end
     end
 
+    describe 'a page missing a selector' do
+      before(:each) do
+        @bot = Klepto::Bot.new("https://twitter.com/justinbieber"){
+          name      'h1.fullname'
+          username  "span.screen-NOPE", default: "CHICKENS"
+        }
+        @structure = @bot.resources
+      end
+
+      it 'should have a sensible default for the structure' do
+        @structure.first[:username].should eq('CHICKENS')
+      end
+    end
 
     describe 'creating a bot with a node limit' do
       before(:each) do

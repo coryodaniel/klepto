@@ -26,46 +26,59 @@ module Klepto
       options[:syntax]  ||= :css
       options[:match]   ||= :first
       options[:attr]    ||= nil
+      options[:default] ||= nil
       options[:limit]   ||= nil
       selector          = args.shift
 
       if options[:as] == :collection
+        
         @_hash[meth] = []
         result = _context.all( options[:syntax], selector )      
         options[:limit] ||= result.length
         result[0, options[:limit]].each do |ele|
           @_hash[meth].push Structure.build(ele, self, &block)
         end 
+
       elsif options[:as] == :resource
+        
         result = _context.first( options[:syntax], selector )
         @_hash[meth] = Structure.build(result, self, &block)
+      
       elsif block
+      
         result = selector ? 
           _context.send( options[:match], options[:syntax], selector ) : _context
 
         if options[:match] == :all
+
           @_hash[meth] = []
           options[:limit] ||= result.length
           result[0, options[:limit]].each do |node|
             @_hash[meth] << block.call( node )
           end
+
         else
+          
           begin
             @_hash[meth] = block.call( result )
           rescue Exception => ex
-            @_hash[meth] = nil
+            @_hash[meth] = options[:default]
           end
         end
+
       else
         result = _context.send( options[:match], options[:syntax], selector )
+
         if options[:match] == :all
           @_hash[meth] = []
           options[:limit] ||= result.length
           result[0, options[:limit]].each do |node|
             @_hash[meth] << (node[options[:attr]] || node.try(:text))
           end        
-        else
+        elsif result
           @_hash[meth] = (result[options[:attr]] || result.try(:text))
+        else
+          @_hash[meth] = options[:default]
         end
       end
     end

@@ -183,8 +183,8 @@ end
 * Add after(:all)
 * :if, :unless for as: (:collection|:resource) to. context should be captured node that block is run against
 * Access to hash from within a block (for bulk assignment of other attributes) ?
-* :default => value|Proc should be an option
 * config.allow_rescue_in_block #should exceptions in blocks be auto rescued with nil as the return value
+* :default should be able to take a proc
 
 Async 
 --------

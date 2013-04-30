@@ -3,28 +3,54 @@ require 'spec_helper'
 describe Klepto::Bot do  
   describe 'Klepto::Bot.new' do
     describe 'create a bot with a redirect' do
-      before(:each) do
-        @bot = Klepto::Bot.new("https://www.twitter.com/justinbieber"){
-          name      'h1.fullname'
-          config.on_http_status(:redirect){
-            StatusLog.create message: 'redirect'
-          }
-          config.on_http_status(200){
-            StatusLog.create message: '200'
-          }            
-        }      
-        @structure = @bot.resources
+      describe 'that aborts on redirect' do
+        before(:each) do
+          @bot = Klepto::Bot.new("https://www.twitter.com/justinbieber"){
+            name      'h1.fullname'
+            config.abort_on_redirect true
+            
+            config.after(:abort){
+              StatusLog.create message: 'Abort!'
+            }            
+          }      
+          @structure = @bot.resources
+        end
+
+        it 'should structure not have structured the data' do
+          @structure.should be_empty
+        end      
+
+        it 'should have dispatched abort handlers' do
+          statuses = StatusLog.all.map(&:message)
+          statuses.should include 'Abort!'
+        end
       end
 
-      it 'should structure the data' do
-        @structure.first[:name].should match(/Justin/i)
-      end      
+      describe 'that follows a redirect' do
+        before(:each) do
+          @bot = Klepto::Bot.new("https://www.twitter.com/justinbieber"){
+            name      'h1.fullname'
+            config.on_http_status(:redirect){
+              StatusLog.create message: 'redirect'
+            }
+            config.on_http_status(200){
+              StatusLog.create message: '200'
+            }            
+          }      
+          @structure = @bot.resources
+        end
 
-      it 'should have dispatched status handlers' do
-        statuses = StatusLog.all.map(&:message)
-        statuses.should include 'redirect'
-        statuses.should include '200'
+        it 'should structure the data' do
+          @structure.first[:name].should match(/Justin/i)
+        end      
+
+        it 'should have dispatched status handlers' do
+          statuses = StatusLog.all.map(&:message)
+          statuses.should include 'redirect'
+          statuses.should include '200'
+        end
       end
+
     end
 
     describe 'aborting after a failure' do

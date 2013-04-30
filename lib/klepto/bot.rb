@@ -46,18 +46,19 @@ EOS
         # redirect happened.
         statuses = [browser.status, browser.statusx]
         statuses.push :redirect if url != browser.page.current_url
+        
         # Dispatch all the handlers for HTTP Status Codes.
         statuses.each do |status|
           config.dispatch_status_handlers(status, browser.page)
         end
-
+        
         # If the page was not a failure or if not aborting, structure that bad boy.
-        if browser.success? || (browser.failure? && !config.abort_on_failure?)
-          resources << __structure(browser.page)
-        else
+        if (browser.failure? && config.abort_on_failure?) || (config.abort_on_redirect? && statuses.include?(:redirect))
           config.after_handlers[:abort].each do |ah|
             ah.call(browser.page)
-          end
+          end          
+        else
+          resources << __structure(browser.page)
         end
       end
 

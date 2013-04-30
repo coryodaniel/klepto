@@ -5,6 +5,7 @@ module Klepto
     def initialize
       @headers = {}
       @abort_on_failure = true
+      @abort_on_redirect = false
       @urls    = []
       @after_handlers   = {
         :each => [], 
@@ -32,10 +33,18 @@ module Klepto
       !!@abort_on_failure
     end
 
+    def abort_on_redirect?
+      !!@abort_on_redirect
+    end
+
     # 4xx, 5xx
     def abort_on_failure(aof)
       @abort_on_failure = aof
     end
+
+    def abort_on_redirect(aor)
+      @abort_on_redirect = aor
+    end    
 
     def on_http_status(*statuses,&block)
       statuses.each do |status|

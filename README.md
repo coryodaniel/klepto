@@ -179,6 +179,13 @@ end
 
 
 ## Stuff I'm going to add.
+* Ensure after(:each) work at resource/collection level as well
+* Add after(:all)
+* :if, :unless for as: (:collection|:resource) to. context should be captured node that block is run against
+* Access to hash from within a block (for bulk assignment of other attributes) ?
+* :default => value|Proc should be an option
+* config.allow_rescue_in_block #should exceptions in blocks be auto rescued with nil as the return value
+
 Async 
 --------
 -> https://github.com/igrigorik/em-synchrony

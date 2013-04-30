@@ -152,6 +152,7 @@ describe Klepto::Bot do
       end
 
       it 'should store the data' do
+        User.first.name.should eq( @structure.first[:name] )
         User.count.should be(1)
         Tweet.count.should_not be(0)
       end
@@ -170,6 +171,33 @@ describe Klepto::Bot do
         statuses.should include '200'
         statuses.should include '2xx'
         statuses.should include 'got a page'
+      end
+    end
+
+    describe 'handling an exception within a block' do
+      before(:each) do
+        @bot = Klepto::Bot.new("https://twitter.com/justinbieber"){
+          name      'h1.fullname'
+          username  "span.screen-name"
+          
+          tweets    'li.stream-item', :as => :collection do
+            twitter_id do |node|
+              node['data-item-id']
+            end
+            tweet '.content p', :css
+            permalink '.time a', :css, :attr => :href
+            timestamp '._timestamp' do |node|
+              raise Exception
+            end
+          end          
+        }
+        @structure = @bot.resources
+      end
+
+      it 'should set the value to nil when an exception is raised' do
+        @structure.first[:name].should match(/Justin/i)
+        @structure.first[:tweets].first.keys.should include(:timestamp)
+        @structure.first[:tweets].first[:timestamp].should be(nil)
       end
     end
 

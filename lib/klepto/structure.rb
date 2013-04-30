@@ -40,11 +40,8 @@ module Klepto
         result = _context.first( options[:syntax], selector )
         @_hash[meth] = Structure.build(result, self, &block)
       elsif block
-        if selector
-          result = _context.send( options[:match], options[:syntax], selector )
-        else
-          result = _context
-        end
+        result = selector ? 
+          _context.send( options[:match], options[:syntax], selector ) : _context
 
         if options[:match] == :all
           @_hash[meth] = []
@@ -53,7 +50,11 @@ module Klepto
             @_hash[meth] << block.call( node )
           end
         else
-          @_hash[meth] = block.call( result )
+          begin
+            @_hash[meth] = block.call( result )
+          rescue Exception => ex
+            @_hash[meth] = nil
+          end
         end
       else
         result = _context.send( options[:match], options[:syntax], selector )

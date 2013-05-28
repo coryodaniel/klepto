@@ -36,7 +36,7 @@ describe Klepto::Structure do
 
     it 'should structure the data' do
       @structure[:name].should match(/Justin/i)
-      @structure[:links].should == ["http://www.youtube.com/justinbieber"]
+      @structure[:links].first.should match(/^http:/i)
       @structure[:username].should eq '@justinbieber'
       @structure[:last_tweet][:twitter_id].should == @structure[:tweets].first[:twitter_id]
     end

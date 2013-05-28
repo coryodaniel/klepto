@@ -1,6 +1,17 @@
 module Klepto
   class Bot
     attr_reader :config
+    @@_bots = {}
+    class << self
+      def run(name,*urls)
+        urls.each do |url|
+          @@_bots[name].parse! url
+        end
+      end
+      def make(name, &block)
+        @@_bots[name] = Klepto::Bot.new(&block)
+      end
+    end
 
     def initialize(*urls, &block)
       @config = Klepto::Config.new
@@ -33,6 +44,7 @@ EOS
         browser   = Klepto::Browser.new
 
         browser.set_headers config.headers
+        browser.set_driver  config.driver
         
         begin
           browser.fetch! url

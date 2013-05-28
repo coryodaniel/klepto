@@ -14,11 +14,16 @@ describe Klepto::Config do
     @config.on_http_status('5xx','4xx'){
       "Its crazy."
     }
+    @config.driver :cool_driver
     @config.abort_on_failure(false)
   end
 
   it 'should be able to set headers' do
     @config.headers['Referer'].should eq('http://example.com')
+  end
+
+  it 'should default to poltergeist as the driver' do
+    @config.driver.should == :cool_driver
   end
 
   it 'should have a 2xx status handler' do

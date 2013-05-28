@@ -12,4 +12,8 @@ describe Klepto::Browser, :vcr => {:record => :new_episodes} do
     @page = @browser.fetch! 'http://www.example.com'
     @page.status_code.should be(200)
   end
+
+  it 'should use poltergeist by default' do
+    @browser.use_driver.should == :poltergeist
+  end
 end

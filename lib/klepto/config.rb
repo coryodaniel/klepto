@@ -24,6 +24,11 @@ module Klepto
     #   @handlers[group][handler].each{|handler| handler.call(*args)}
     # end
 
+    def driver(_driver=nil)
+      @default_driver = _driver if _driver
+      @default_driver
+    end
+
     def headers(_headers=nil)
       @headers = _headers if _headers
       @headers

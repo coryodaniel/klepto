@@ -15,6 +15,7 @@ module Klepto
       # and restore method_missing (for sanity sake)
       instance_eval <<-EOS
 def queue; @queue; end;
+def parse!(*_urls); __process!(*_urls); end;
 def resources; @resources; end;
 def method_missing(meth, *args, &block)
   raise NoMethodError.new("undefined method: Klepto::Bot#" + meth.to_s)
@@ -25,10 +26,10 @@ EOS
     end
 
     # Structure all the pages
-    def __process!
+    def __process!(*_urls)
       @resources = []
 
-      config.urls.each do |url|
+      (_urls + config.urls).each do |url|
         browser   = Klepto::Browser.new
 
         browser.set_headers config.headers

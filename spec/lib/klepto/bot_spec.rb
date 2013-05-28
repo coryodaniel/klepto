@@ -178,6 +178,11 @@ describe Klepto::Bot do
         @structure.first[:last_tweet][:twitter_id].should == @structure.first[:tweets].first[:twitter_id]
       end
 
+      it 'should be able to #parse! a url' do
+        @new_structure = @bot.parse!("https://twitter.com/justinbieber")
+        @new_structure.first[:name].should match(/Justin/i)
+      end
+
       it 'should store the data' do
         User.first.name.should eq( @structure.first[:name] )
         User.count.should be(1)

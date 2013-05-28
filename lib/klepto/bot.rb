@@ -33,8 +33,13 @@ EOS
         browser   = Klepto::Browser.new
 
         browser.set_headers config.headers
-        browser.fetch! url
-
+        
+        begin
+          browser.fetch! url
+        rescue Capybara::Poltergeist::TimeoutError => ex
+          dispatch_timeout_handler(ex, url)
+        end
+        
         # Fire callbacks on GET
         config.after_handlers[:get].each do |ah|
           ah.call(browser.page)

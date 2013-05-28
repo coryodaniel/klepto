@@ -29,6 +29,10 @@ module Klepto
       @headers
     end
 
+    def has_timeout_handler?
+      @status_handlers[:timeout] && @status_handlers[:timeout].any?
+    end
+
     def abort_on_failure?
       !!@abort_on_failure
     end
@@ -46,6 +50,21 @@ module Klepto
       @abort_on_redirect = aor
     end    
 
+    def on_http_timeout(&block)
+      @status_handlers[:timeout] ||= []
+      @status_handlers[:timeout].push block
+    end
+
+    def dispatch_timeout_handler(ex, url)
+      if @status_handlers[:timeout]
+        @status_handlers[:timeout].each do |handler|
+          handler.call(ex, url)
+        end
+      else
+        raise ex
+      end
+    end
+
     def on_http_status(*statuses,&block)
       statuses.each do |status|
         @status_handlers[status] ||= []
@@ -54,8 +73,7 @@ module Klepto
     end
 
     def dispatch_status_handlers(status, page)
-      handlers = @status_handlers[status]
-      if handlers.present?
+      if @status_handlers[status]
         @status_handlers[status].each do |handler|
           handler.call(page)
         end

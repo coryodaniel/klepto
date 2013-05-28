@@ -58,11 +58,11 @@ module Klepto
           end
 
         else
-          #begin
+          if result
             @_hash[meth] = block.call( result )
-          #rescue Exception => ex
-          #  @_hash[meth] = options[:default]
-          #end
+          else
+            @_hash[meth] = options[:default]
+          end
         end
 
       else

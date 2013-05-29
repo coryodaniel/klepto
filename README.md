@@ -215,3 +215,7 @@ assertions do
 end
 on_assertion_failure{ |response, bot| }
 ```
+
+Structure
+:if
+unless: lambda{|node| node.class.include?("newsflash")}

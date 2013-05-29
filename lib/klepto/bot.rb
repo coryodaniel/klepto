@@ -45,6 +45,11 @@ EOS
 
         browser.set_headers config.headers
         #browser.set_driver  config.driver
+
+        # Call before(:each) handlers...
+        config.before_handlers[:each].each { |bh| 
+          bh.call(structure._hash, url, browser) 
+        }
         
         begin
           browser.fetch! url

@@ -1,6 +1,7 @@
 module Klepto
   class Config
     attr_reader :after_handlers
+    attr_reader :before_handlers
 
     def initialize
       @headers = {}

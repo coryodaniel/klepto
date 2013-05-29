@@ -48,7 +48,7 @@ EOS
 
         # Call before(:each) handlers...
         config.before_handlers[:each].each { |bh| 
-          bh.call(structure._hash, url, browser) 
+          bh.call(url, browser) 
         }
         
         begin

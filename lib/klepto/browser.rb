@@ -6,13 +6,13 @@ module Klepto
       super
     end
 
-    def set_driver(use_driver)
-      @use_driver = use_driver
-    end
+    # def set_driver(use_driver)
+    #   @use_driver = use_driver
+    # end
 
-    def use_driver
-      @use_driver || :poltergeist
-    end
+    # def use_driver
+    #   @use_driver || :poltergeist
+    # end
 
     def set_headers(headers)
       page.driver.headers = headers
@@ -35,10 +35,10 @@ module Klepto
     end
     
     def fetch!(url)
-      Capybara.using_driver use_driver do
+      #Capybara.using_driver use_driver do
         visit url
         page
-      end
+      #end
     end
   end
 end

@@ -14,7 +14,7 @@ describe Klepto::Config do
     @config.on_http_status('5xx','4xx'){
       "Its crazy."
     }
-    @config.driver :cool_driver
+    #@config.driver :cool_driver
     @config.abort_on_failure(false)
   end
 
@@ -22,9 +22,9 @@ describe Klepto::Config do
     @config.headers['Referer'].should eq('http://example.com')
   end
 
-  it 'should default to poltergeist as the driver' do
-    @config.driver.should == :cool_driver
-  end
+  # it 'should default to poltergeist as the driver' do
+  #   @config.driver.should == :cool_driver
+  # end
 
   it 'should have a 2xx status handler' do
     @config.instance_variable_get("@status_handlers")['2xx'].first.call.should eq ('Its 2xx')

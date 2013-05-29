@@ -44,7 +44,7 @@ EOS
         browser   = Klepto::Browser.new
 
         browser.set_headers config.headers
-        browser.set_driver  config.driver
+        #browser.set_driver  config.driver
         
         begin
           browser.fetch! url

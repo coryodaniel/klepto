@@ -59,7 +59,7 @@ EOS
         
         # Fire callbacks on GET
         config.after_handlers[:get].each do |ah|
-          ah.call(browser.page)
+          ah.call(browser.page, browser, url)
         end
         
         # Capybara automatically follows redirects... Checking the page here
@@ -78,7 +78,12 @@ EOS
         # If the page was not a failure or if not aborting, structure that bad boy.
         if (browser.failure? && config.abort_on_failure?) || (config.abort_on_redirect? && statuses.include?(:redirect))
           config.after_handlers[:abort].each do |ah|
-            ah.call(browser.page)
+            ah.call(browser.page,{
+              browser_failure: browser.failure?,
+              abort_on_failure: config.abort_on_failure?,
+              abort_on_redirect: config.abort_on_redirect?,
+              redirect: statuses.include?(:redirect)
+            })
           end          
         else
           resources << __structure(browser.page)

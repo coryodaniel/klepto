@@ -40,5 +40,8 @@ describe Klepto::Structure do
       @structure[:username].should eq '@justinbieber'
       @structure[:last_tweet][:twitter_id].should == @structure[:tweets].first[:twitter_id]
     end
+
+    pending 'should be able to specify an :unless statement for a collection'
+    pending 'should be able to specify an :if statement for a collection'
   end
 end

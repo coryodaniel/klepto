@@ -49,7 +49,7 @@ EOS
         begin
           browser.fetch! url
         rescue Capybara::Poltergeist::TimeoutError => ex
-          dispatch_timeout_handler(ex, url)
+          config.dispatch_timeout_handler(ex, url)
         end
         
         # Fire callbacks on GET

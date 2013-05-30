@@ -247,6 +247,21 @@ describe Klepto::Bot do
       end
     end
 
+    describe 'structuring with a Parser' do
+      before(:each) do
+        @bot = Klepto::Bot.new("https://twitter.com/justinbieber"){
+          name      'h1.fullname', parser: TextParser
+          links 'span.url a', :match => :all, :parser => HrefParser
+        }
+        @structure = @bot.resources
+      end
+
+      it 'should structure the data' do
+        @structure.first[:name].should match(/Justin/i)
+        @structure.first[:links].first.should match(/^http:/i)
+      end     
+    end
+
     describe 'creating a bot with a node limit' do
       before(:each) do
         @bot = Klepto::Bot.new("https://twitter.com/justinbieber"){

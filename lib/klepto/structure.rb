@@ -29,7 +29,12 @@ module Klepto
       options[:attr]    ||= nil
       options[:default] ||= nil
       options[:limit]   ||= nil
+      options[:parser]  ||= nil
       selector          = args.shift
+
+      if !block_given? && options[:parser]
+        block = options[:parser].new
+      end
 
       Klepto.logger.debug("\t\tDefining attribute: #{meth} -> #{selector}")
 
@@ -48,7 +53,6 @@ module Klepto
         result = _context.first( options[:syntax], selector )
         Klepto.logger.debug("\t\t\tAs: resource, Result? #{!result.nil?}")        
         @_hash[meth] = Structure.build(result, self, &block)
-      
       elsif block
         result = selector ? 
           _context.send( options[:match], options[:syntax], selector ) : _context

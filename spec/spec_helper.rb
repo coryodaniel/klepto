@@ -7,6 +7,7 @@ SimpleCov.start do
 end
 
 require 'klepto'
+require 'klepto/parser'
 require 'vcr'
 require 'orm/active_record'
 
@@ -33,4 +34,14 @@ RSpec.configure do |config|
   config.after(:all) { TestMigration.down }
   config.treat_symbols_as_metadata_keys_with_true_values = true
   #config.filter_run_including :only => true
+end
+
+class TextParser
+  include Klepto::Parser
+end
+class HrefParser
+  include Klepto::Parser
+  def call(node)
+    node[:href]
+  end
 end

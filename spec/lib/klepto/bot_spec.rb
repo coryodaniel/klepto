@@ -55,7 +55,7 @@ describe Klepto::Bot do
 
     describe 'aborting after a failure' do
       before(:each) do
-        @bot = Klepto::Bot.new("https://github.com/coryodaniel/nonexistentproject"){
+        @bot = Klepto::Bot.new("http://coryodaniel.com/nowayjose"){
           name 'h1.fullname'
           config.abort_on_failure true
           config.after(:abort) do |page|
@@ -72,8 +72,8 @@ describe Klepto::Bot do
 
     describe 'structuring a 4xx or 5xx response' do
       before(:each) do
-        @bot = Klepto::Bot.new("https://github.com/coryodaniel/nonexistentproject"){
-          cat 'img#parallax_octocat', :attr => :alt
+        @bot = Klepto::Bot.new("http://coryodaniel.com/nowayjose"){
+          title 'h2'
           config.abort_on_failure false
           config.after(:abort) do |page|
             StatusLog.create message: 'Aborted.'
@@ -83,7 +83,7 @@ describe Klepto::Bot do
       end      
 
       it 'should perform structuring' do
-        @structure.first[:cat].should eq('Octobi Wan Catnobi')
+        @structure.first[:title].should == 'Not Found'
       end
 
       it 'should not abort after a 4xx or 5xx' do

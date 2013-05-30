@@ -14,10 +14,16 @@ end
 Capybara.current_driver = :poltergeist
 
 module Klepto
-  LOG = Logger.new(STDOUT)
-  LOG.level = Logger::WARN
+  def self.logger
+    @@logger
+  end
+  def self.logger=(logger)
+    @@logger = logger
+  end
 end
-
+Klepto.logger       = Logger.new(STDOUT)
+Klepto.logger.level = Logger::INFO
+  
 require 'klepto/version'
 require 'klepto/config'
 require 'klepto/browser'

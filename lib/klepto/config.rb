@@ -9,9 +9,9 @@ module Klepto
       @abort_on_redirect = false
       @urls    = []
       @after_handlers   = {
-        :each => [], 
-        :get  => [],
-        :abort=> []
+        :each => [], #after each call to
+        :get  => [], #after GET, before structure
+        :abort=> []  #after abort
       }
       @before_handlers  = {:each => []}
       @status_handlers  = {}

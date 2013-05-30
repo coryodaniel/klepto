@@ -171,7 +171,8 @@ end
 ## Callbacks & Processing
 
 * before
-  * n/a
+  * :get
+  * :structure  
 * after
   * :each (resource, Hash) - called for each resource parsed
   * :get (page, Capybara::Node) - called after each HTTP GET

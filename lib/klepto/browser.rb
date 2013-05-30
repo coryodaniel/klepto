@@ -3,6 +3,7 @@ module Klepto
     include Capybara::DSL
 
     def initialize(*args)
+      Klepto.logger.debug("===== Initializing new browser. =====")
       super
     end
 
@@ -35,6 +36,7 @@ module Klepto
     end
     
     def fetch!(url)
+      Klepto.logger.debug("Fetching #{url}")
       #Capybara.using_driver use_driver do
         visit url
         page

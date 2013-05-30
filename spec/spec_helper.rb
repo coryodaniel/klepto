@@ -10,6 +10,9 @@ require 'klepto'
 require 'vcr'
 require 'orm/active_record'
 
+Klepto.logger = Logger.new('debug.log')
+Klepto.logger.level = Logger::DEBUG
+
 def page(url="http://example.com")
   Capybara::Node::Simple.new(open(url).read)
 end

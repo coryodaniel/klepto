@@ -53,40 +53,32 @@ EOS
         
         begin
           browser.fetch! url
+          
+          # Fire callbacks on GET
+          config.after_handlers[:get].each do |ah|
+            ah.call(browser.page, browser, url)
+          end
+                  
+          # Dispatch all the handlers for HTTP Status Codes.
+          browser.statuses.each do |status|
+            config.dispatch_status_handlers(status, browser.page)
+          end
+          
+          # If the page was not a failure or if not aborting, structure that bad boy.
+          if (browser.failure? && config.abort_on_failure?) || (config.abort_on_redirect? && browser.was_redirected?)
+            config.after_handlers[:abort].each do |ah|
+              ah.call(browser.page,{
+                browser_failure:     browser.failure?,
+                abort_on_failure:   config.abort_on_failure?,
+                abort_on_redirect:  config.abort_on_redirect?,
+                redirect:           browser.was_redirected?
+              })
+            end          
+          else
+            resources << __structure(browser.page)
+          end          
         rescue Capybara::Poltergeist::TimeoutError => ex
           config.dispatch_timeout_handler(ex, url)
-        end
-        
-        # Fire callbacks on GET
-        config.after_handlers[:get].each do |ah|
-          ah.call(browser.page, browser, url)
-        end
-        
-        # Capybara automatically follows redirects... Checking the page here
-        # to see if it has changed, and if so add it on to the stack of statuses.
-        # statuses is an array because it holds the actually HTTP response code and an
-        # approximate code (2xx for example). :redirect will be pushed onto the stack if a
-        # redirect happened.
-        statuses = [browser.status, browser.statusx]
-        statuses.push :redirect if url != browser.page.current_url
-        
-        # Dispatch all the handlers for HTTP Status Codes.
-        statuses.each do |status|
-          config.dispatch_status_handlers(status, browser.page)
-        end
-        
-        # If the page was not a failure or if not aborting, structure that bad boy.
-        if (browser.failure? && config.abort_on_failure?) || (config.abort_on_redirect? && statuses.include?(:redirect))
-          config.after_handlers[:abort].each do |ah|
-            ah.call(browser.page,{
-              browser_failure: browser.failure?,
-              abort_on_failure: config.abort_on_failure?,
-              abort_on_redirect: config.abort_on_redirect?,
-              redirect: statuses.include?(:redirect)
-            })
-          end          
-        else
-          resources << __structure(browser.page)
         end
       end
 

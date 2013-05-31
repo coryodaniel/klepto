@@ -54,7 +54,7 @@ EOS
         # If the page was not a failure or if not aborting, structure that bad boy.
         if (@browser.failure? && @config.abort_on_failure?) || (@config.abort_on_redirect? && @browser.was_redirected?)
           @config.after_handlers[:abort].each do |ah|
-            ah.call(browser.page,{
+            ah.call(@browser.page,{
               browser_failure:    @browser.failure?,
               abort_on_failure:   @config.abort_on_failure?,
               abort_on_redirect:  @config.abort_on_redirect?,
@@ -65,7 +65,7 @@ EOS
           @structure = __structure(@browser.page)
         end          
       rescue Capybara::Poltergeist::TimeoutError => ex
-        config.dispatch_timeout_handler(ex, url)
+        config.dispatch_timeout_handler(ex, @config.url)
       end
 
       @structure

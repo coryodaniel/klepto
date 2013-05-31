@@ -17,6 +17,7 @@ module Klepto
       @config = Klepto::Config.new
       @config.urls urls
       @queue  = []
+      @pages  = {}
 
       # Evaluate the block as DSL, proxy off anything that isn't on #config
       #   to a queue, then apply that queue to the top-level Klepto::Structure
@@ -26,6 +27,7 @@ module Klepto
       # and restore method_missing (for sanity sake)
       instance_eval <<-EOS
 def queue; @queue; end;
+def pages; @pages; end;
 def parse!(*_urls); __process!(*_urls); end;
 def resources; @resources; end;
 def method_missing(meth, *args, &block)
@@ -53,7 +55,9 @@ EOS
         
         begin
           browser.fetch! url
-          
+
+          @pages[url] = browser.page if config.keep_pages
+
           # Fire callbacks on GET
           config.after_handlers[:get].each do |ah|
             ah.call(browser.page, browser, url)
@@ -75,7 +79,7 @@ EOS
               })
             end          
           else
-            resources << __structure(browser.page)
+            @resources << __structure(browser.page)
           end          
         rescue Capybara::Poltergeist::TimeoutError => ex
           config.dispatch_timeout_handler(ex, url)

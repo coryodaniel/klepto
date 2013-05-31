@@ -114,6 +114,8 @@ describe Klepto::Bot do
             'X-Sup-Dawg'  => "Yo, What's up?"
           })
 
+          config.keep_pages true
+
           # Structure that stuff
           name      'h1.fullname'
           username "//span[contains(concat(' ',normalize-space(@class),' '),' screen-name ')]", :syntax => :xpath
@@ -176,6 +178,10 @@ describe Klepto::Bot do
         #@structure.first[:links].should == ["http://t.co/2oSNE36kNM"]
         @structure.first[:username].should eq '@justinbieber'
         @structure.first[:last_tweet][:twitter_id].should == @structure.first[:tweets].first[:twitter_id]
+      end
+
+      it 'should have the pages stored' do
+        @bot.pages["https://twitter.com/justinbieber"].should_not be_nil
       end
 
       it 'should be able to #parse! a url' do

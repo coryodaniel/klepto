@@ -2,9 +2,11 @@ module Klepto
   class Config
     attr_reader :after_handlers
     attr_reader :before_handlers
+    attr_reader :keep_pages
 
     def initialize
       @headers = {}
+      @keep_pages = false
       @abort_on_failure = true
       @abort_on_redirect = false
       @urls    = []
@@ -29,6 +31,11 @@ module Klepto
     #   @default_driver = _driver if _driver
     #   @default_driver
     # end
+
+    def keep_pages(_keep = nil)
+      @keep_pages = _keep if _keep != nil
+      @keep_pages
+    end
 
     def headers(_headers=nil)
       @headers = _headers if _headers

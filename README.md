@@ -165,7 +165,7 @@ end
 
 ## Configuration Options
 * config.headers - Hash; Sets request headers
-* config.urls    - Array(String); Sets URLs to structure
+* config.url    - String; Set URL to structure
 * config.abort_on_failure - Boolean(Default: true); Should structuring be aborted on 4xx or 5xx
 
 ## Callbacks & Processing

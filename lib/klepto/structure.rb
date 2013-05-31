@@ -61,8 +61,8 @@ module Klepto
           Klepto.logger.debug("\t\t\tAs: block (match all), Result? #{!result.nil?}")
           @_hash[meth] = []
           options[:limit] ||= result.length
-          result[0, options[:limit]].each do |node|
-            @_hash[meth] << block.call( node )
+          result[0, options[:limit]].each do |_node|
+            @_hash[meth] << block.call( _node )
           end
         else
           if result
@@ -81,8 +81,8 @@ module Klepto
           Klepto.logger.debug("\t\t\tAs: simple (match all), Result? #{!result.nil?}")
           @_hash[meth] = []
           options[:limit] ||= result.length
-          result[0, options[:limit]].each do |node|
-            @_hash[meth] << (node[options[:attr]] || node.try(:text))
+          result[0, options[:limit]].each do |_node|
+            @_hash[meth] << (_node[options[:attr]] || _node.try(:text))
           end        
         elsif result
           Klepto.logger.debug("\t\t\tAs: block (match one)")

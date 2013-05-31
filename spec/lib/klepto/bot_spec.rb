@@ -13,11 +13,10 @@ describe Klepto::Bot do
               StatusLog.create message: 'Abort!'
             }            
           }      
-          @structure = @bot.resources
         end
 
         it 'should structure not have structured the data' do
-          @structure.should be_empty
+          @bot.structure.should be_nil
         end      
 
         it 'should have dispatched abort handlers' do
@@ -37,11 +36,10 @@ describe Klepto::Bot do
               StatusLog.create message: '200'
             }            
           }      
-          @structure = @bot.resources
         end
 
         it 'should structure the data' do
-          @structure.first[:name].should match(/Justin/i)
+          @bot.structure[:name].should match(/Justin/i)
         end      
 
         it 'should have dispatched status handlers' do
@@ -62,7 +60,6 @@ describe Klepto::Bot do
             StatusLog.create message: 'Aborted.'
           end
         }
-        @structure = @bot.resources
       end      
 
       it 'should abort after a 4xx or 5xx' do
@@ -79,30 +76,14 @@ describe Klepto::Bot do
             StatusLog.create message: 'Aborted.'
           end
         }
-        @structure = @bot.resources
       end      
 
       it 'should perform structuring' do
-        @structure.first[:title].should == 'Not Found'
+        @bot.structure[:title].should == 'Not Found'
       end
 
       it 'should not abort after a 4xx or 5xx' do
         StatusLog.first.should be(nil)
-      end
-    end
-
-    describe 'structuring multiple pages' do
-      before(:each) do
-        @bot = Klepto::Bot.new("https://twitter.com/justinbieber"){
-          config.urls "https://twitter.com/ladygaga"
-          name 'h1.fullname'
-        }
-        @structure = @bot.resources
-      end
-
-      it 'should have both pages data' do
-        @structure.first[:name].should match(/Justin/i)
-        @structure.last[:name].should match(/Lady/i)
       end
     end
 
@@ -113,8 +94,6 @@ describe Klepto::Bot do
             'Referer'     => 'http://www.twitter.com',
             'X-Sup-Dawg'  => "Yo, What's up?"
           })
-
-          config.keep_pages true
 
           # Structure that stuff
           name      'h1.fullname'
@@ -169,28 +148,18 @@ describe Klepto::Bot do
             end
           end 
         }
-        @structure = @bot.resources
       end
 
       it 'should structure the data' do
-        @structure.first[:name].should match(/Justin/i)
-        @structure.first[:links].first.should match(/^http:/i)
-        #@structure.first[:links].should == ["http://t.co/2oSNE36kNM"]
-        @structure.first[:username].should eq '@justinbieber'
-        @structure.first[:last_tweet][:twitter_id].should == @structure.first[:tweets].first[:twitter_id]
-      end
-
-      it 'should have the pages stored' do
-        @bot.pages["https://twitter.com/justinbieber"].should_not be_nil
-      end
-
-      it 'should be able to #parse! a url' do
-        @new_structure = @bot.parse!("https://twitter.com/justinbieber")
-        @new_structure.first[:name].should match(/Justin/i)
+        @bot.structure[:name].should match(/Justin/i)
+        @bot.structure[:links].first.should match(/^http:/i)
+        #@bot.structure[:links].should == ["http://t.co/2oSNE36kNM"]
+        @bot.structure[:username].should eq '@justinbieber'
+        @bot.structure[:last_tweet][:twitter_id].should == @bot.structure[:tweets].first[:twitter_id]
       end
 
       it 'should store the data' do
-        User.first.name.should eq( @structure.first[:name] )
+        User.first.name.should eq( @bot.structure[:name] )
         User.count.should be(1)
         Tweet.count.should_not be(0)
       end
@@ -229,13 +198,12 @@ describe Klepto::Bot do
     #         end
     #       end          
     #     }
-    #     @structure = @bot.resources
     #   end
 
     #   it 'should set the value to nil when an exception is raised' do
-    #     @structure.first[:name].should match(/Justin/i)
-    #     @structure.first[:tweets].first.keys.should include(:timestamp)
-    #     @structure.first[:tweets].first[:timestamp].should be(nil)
+    #     @bot.structure[:name].should match(/Justin/i)
+    #     @bot.structure[:tweets].first.keys.should include(:timestamp)
+    #     @bot.structure[:tweets].first[:timestamp].should be(nil)
     #   end
     # end
 
@@ -245,11 +213,10 @@ describe Klepto::Bot do
           name      'h1.fullname'
           username  "span.screen-NOPE", default: "CHICKENS"
         }
-        @structure = @bot.resources
       end
 
       it 'should have a sensible default for the structure' do
-        @structure.first[:username].should eq('CHICKENS')
+        @bot.structure[:username].should eq('CHICKENS')
       end
     end
 
@@ -259,12 +226,11 @@ describe Klepto::Bot do
           name      'h1.fullname', parser: TextParser
           links 'span.url a', :match => :all, :parser => HrefParser
         }
-        @structure = @bot.resources
       end
 
       it 'should structure the data' do
-        @structure.first[:name].should match(/Justin/i)
-        @structure.first[:links].first.should match(/^http:/i)
+        @bot.structure[:name].should match(/Justin/i)
+        @bot.structure[:links].first.should match(/^http:/i)
       end     
     end
 
@@ -300,7 +266,6 @@ describe Klepto::Bot do
             end
           end 
         }
-        @structure = @bot.resources
       end
 
       it 'should limit the nodes structured' do
@@ -308,7 +273,5 @@ describe Klepto::Bot do
         Tweet.count.should be(5)
       end
     end
-
-
   end
 end

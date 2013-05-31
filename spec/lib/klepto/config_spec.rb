@@ -4,7 +4,7 @@ describe Klepto::Config do
   before(:each) do
     @config = Klepto::Config.new
     @config.headers({'Referer' => 'http://example.com'})
-    @config.urls 'http://example.com', 'http://www.iana.org'
+    @config.url 'http://example.com'
     @config.on_http_status(200){
       "Its 200"
     }
@@ -39,8 +39,8 @@ describe Klepto::Config do
     @config.instance_variable_get("@status_handlers")['4xx'].first.call.should eq ('Its crazy.')
   end
 
-  it 'should be able to set URLs' do
-    @config.urls.should == ['http://example.com', 'http://www.iana.org']
+  it 'should be able to set a URL' do
+    @config.url.should == 'http://example.com'
   end
 
   it 'should have an abort on 4xx/5xx option' do

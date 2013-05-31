@@ -1,24 +1,13 @@
 module Klepto
   class Bot
     attr_reader :config
-    @@_bots = {}
-    class << self
-      def run(name,*urls)
-        urls.each do |url|
-          @@_bots[name].parse! url
-        end
-      end
-      def make(name, &block)
-        @@_bots[name] = Klepto::Bot.new(&block)
-      end
-    end
 
-    def initialize(*urls, &block)
+    def initialize(url=nil, &block)
       @config = Klepto::Config.new
-      @config.urls urls
+      @config.url url
       @queue  = []
-      @pages  = {}
-
+      @browser = Klepto::Browser.new
+      
       # Evaluate the block as DSL, proxy off anything that isn't on #config
       #   to a queue, then apply that queue to the top-level Klepto::Structure
       instance_eval &block
@@ -27,9 +16,9 @@ module Klepto
       # and restore method_missing (for sanity sake)
       instance_eval <<-EOS
 def queue; @queue; end;
-def pages; @pages; end;
-def parse!(*_urls); __process!(*_urls); end;
-def resources; @resources; end;
+def browser; @browser; end;
+def url=(_url); @config.url(_url); end;
+def structure; @structure; end;
 def method_missing(meth, *args, &block)
   raise NoMethodError.new("undefined method: Klepto::Bot#" + meth.to_s)
 end
@@ -39,54 +28,47 @@ EOS
     end
 
     # Structure all the pages
-    def __process!(*_urls)
-      @resources = []
+    def __process!
+      @structure = nil
+      @browser.set_headers @config.headers
+      #browser.set_driver  config.driver
 
-      (_urls + config.urls).each do |url|
-        browser   = Klepto::Browser.new
+      # Call before(:each) handlers...
+      @config.before_handlers[:each].each { |bh| 
+        bh.call(url, browser) 
+      }
+      
+      begin
+        @browser.fetch! @config.url
 
-        browser.set_headers config.headers
-        #browser.set_driver  config.driver
-
-        # Call before(:each) handlers...
-        config.before_handlers[:each].each { |bh| 
-          bh.call(url, browser) 
-        }
-        
-        begin
-          browser.fetch! url
-
-          @pages[url] = browser.page if config.keep_pages
-
-          # Fire callbacks on GET
-          config.after_handlers[:get].each do |ah|
-            ah.call(browser.page, browser, url)
-          end
-                  
-          # Dispatch all the handlers for HTTP Status Codes.
-          browser.statuses.each do |status|
-            config.dispatch_status_handlers(status, browser.page)
-          end
-          
-          # If the page was not a failure or if not aborting, structure that bad boy.
-          if (browser.failure? && config.abort_on_failure?) || (config.abort_on_redirect? && browser.was_redirected?)
-            config.after_handlers[:abort].each do |ah|
-              ah.call(browser.page,{
-                browser_failure:     browser.failure?,
-                abort_on_failure:   config.abort_on_failure?,
-                abort_on_redirect:  config.abort_on_redirect?,
-                redirect:           browser.was_redirected?
-              })
-            end          
-          else
-            @resources << __structure(browser.page)
-          end          
-        rescue Capybara::Poltergeist::TimeoutError => ex
-          config.dispatch_timeout_handler(ex, url)
+        # Fire callbacks on GET
+        @config.after_handlers[:get].each do |ah|
+          ah.call(@browser.page, @browser, @config.url)
         end
+                
+        # Dispatch all the handlers for HTTP Status Codes.
+        @browser.statuses.each do |status|
+          @config.dispatch_status_handlers(status, @browser.page)
+        end
+        
+        # If the page was not a failure or if not aborting, structure that bad boy.
+        if (@browser.failure? && @config.abort_on_failure?) || (@config.abort_on_redirect? && @browser.was_redirected?)
+          @config.after_handlers[:abort].each do |ah|
+            ah.call(browser.page,{
+              browser_failure:    @browser.failure?,
+              abort_on_failure:   @config.abort_on_failure?,
+              abort_on_redirect:  @config.abort_on_redirect?,
+              redirect:           @browser.was_redirected?
+            })
+          end          
+        else
+          @structure = __structure(@browser.page)
+        end          
+      rescue Capybara::Poltergeist::TimeoutError => ex
+        config.dispatch_timeout_handler(ex, url)
       end
 
-      @resources
+      @structure
     end
 
     def __structure(context)

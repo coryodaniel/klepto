@@ -35,6 +35,10 @@ module Klepto
     def was_redirected?
       @url_to_structure != page.current_url
     end
+
+    def similar_url?
+      @url_to_structure.downcase == page.current_url.downcase
+    end
     
     # Capybara automatically follows redirects... Checking the page here
     # to see if it has changed, and if so add it on to the stack of statuses.

@@ -2,8 +2,7 @@ module Klepto
   class Config
     attr_reader :after_handlers
     attr_reader :before_handlers
-    attr_reader :status_handlers
-
+    
     def initialize
       @headers = {}
       @abort_on_failure = true
@@ -54,6 +53,10 @@ module Klepto
 
     def abort_on_redirect(aor)
       @abort_on_redirect = aor
+    end
+
+    def status_handler(status)
+      @status_handlers[status] || []
     end    
 
     def on_http_timeout(&block)

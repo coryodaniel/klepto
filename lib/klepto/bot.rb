@@ -45,32 +45,30 @@ EOS
         @config.after_handlers[:get].each do |ah|
           ah.call(@browser, @config.url)
         end
+
+        if @browser.was_redirected?
+          @config.status_handler(:redirect).each {|sh| sh.call(:redirect, @browser) }
+
+          if @config.abort_on_redirect?
+            @config.after_handlers[:abort].each {|ah| ah.call(@browser) }
+            return
+          end
+        end
                 
         # Dispatch all the handlers for HTTP Status Codes.
         @browser.statuses.each do |status|
-          (@config.status_handlers[status] || []).each do |sh|
-            sh.call(status, @browser)
-          end
+          @config.status_handler(status).each {|sh| sh.call(status, @browser) }
         end
         
         # If the page was not a failure or if not aborting, structure that bad boy.
-        if (@browser.failure? && @config.abort_on_failure?) || (@config.abort_on_redirect? && @browser.was_redirected?)
-          @config.after_handlers[:abort].each do |ah|
-            ah.call(@browser,{
-              browser_failure:    @browser.failure?,
-              abort_on_failure:   @config.abort_on_failure?,
-              abort_on_redirect:  @config.abort_on_redirect?,
-              redirect:           @browser.was_redirected?
-            })
-          end          
+        if (@browser.failure? && @config.abort_on_failure?) 
+          @config.after_handlers[:abort].each {|ah| ah.call(@browser) }
         else
           @structure = __structure(@browser.page)
         end          
       rescue Capybara::Poltergeist::TimeoutError => ex
         if @config.has_timeout_handler?
-          @config.status_handlers[:timeout].each do |th|
-            th.call(ex, @browser, @config.url)
-          end
+          @config.status_handlers[:timeout].each{|th| th.call(ex, @browser, @config.url) }
         else
           raise ex
         end

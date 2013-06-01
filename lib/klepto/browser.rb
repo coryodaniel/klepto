@@ -42,11 +42,7 @@ module Klepto
     # approximate code (2xx for example). :redirect will be pushed onto the stack if a
     # redirect happened.    
     def statuses
-      if !was_redirected?
-        [status, statusx]
-      else
-        [status, statusx, :redirect]
-      end
+      [status, statusx]
     end
 
     def statusx

@@ -2,7 +2,7 @@ module Klepto
   class Browser
     include Capybara::DSL
 
-    attr_reader :last_url
+    attr_reader :desired_url
     def initialize(*args)
       Klepto.logger.debug("===== Initializing new browser. =====")
       super
@@ -33,7 +33,7 @@ module Klepto
     end
 
     def was_redirected?
-      @last_url != page.current_url
+      @url_to_structure != page.current_url
     end
     
     # Capybara automatically follows redirects... Checking the page here
@@ -53,11 +53,12 @@ module Klepto
       page.status_code.to_s[0..-3] + "xx"
     end
     
-    def fetch!(url)
-      @last_url = url
-      Klepto.logger.debug("Fetching #{url}")
+    def fetch!(_url)
+      @url_to_structure = _url
+      Klepto.logger.debug("Fetching #{@url_to_structure}")
+
       #Capybara.using_driver use_driver do
-        visit url
+        visit @url_to_structure
         page
       #end
     end

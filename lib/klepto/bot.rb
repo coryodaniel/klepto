@@ -18,6 +18,7 @@ module Klepto
 def queue; @queue; end;
 def browser; @browser; end;
 def url=(_url); @config.url(_url); end;
+def process!; __process!; end;
 def structure; @structure; end;
 def method_missing(meth, *args, &block)
   raise NoMethodError.new("undefined method: Klepto::Bot#" + meth.to_s)

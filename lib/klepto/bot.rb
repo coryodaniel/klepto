@@ -68,7 +68,7 @@ EOS
         end          
       rescue Capybara::Poltergeist::TimeoutError => ex
         if @config.has_timeout_handler?
-          @config.status_handlers[:timeout].each{|th| th.call(ex, @browser, @config.url) }
+          @config.status_handler(:timeout).each{|th| th.call(ex, @browser, @config.url) }
         else
           raise ex
         end

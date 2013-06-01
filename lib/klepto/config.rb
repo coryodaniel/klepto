@@ -2,6 +2,7 @@ module Klepto
   class Config
     attr_reader :after_handlers
     attr_reader :before_handlers
+    attr_reader :status_handlers
 
     def initialize
       @headers = {}
@@ -60,28 +61,10 @@ module Klepto
       @status_handlers[:timeout].push block
     end
 
-    def dispatch_timeout_handler(ex, url)
-      if @status_handlers[:timeout]
-        @status_handlers[:timeout].each do |handler|
-          handler.call(ex, url)
-        end
-      else
-        raise ex
-      end
-    end
-
     def on_http_status(*statuses,&block)
       statuses.each do |status|
         @status_handlers[status] ||= []
         @status_handlers[status].push block
-      end
-    end
-
-    def dispatch_status_handlers(status, page)
-      if @status_handlers[status]
-        @status_handlers[status].each do |handler|
-          handler.call(page)
-        end
       end
     end
 

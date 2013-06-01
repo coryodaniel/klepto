@@ -48,7 +48,9 @@ EOS
                 
         # Dispatch all the handlers for HTTP Status Codes.
         @browser.statuses.each do |status|
-          @config.dispatch_status_handlers(status, @browser)
+          (@config.status_handlers[status] || []).each do |sh|
+            sh.call(status, @browser)
+          end
         end
         
         # If the page was not a failure or if not aborting, structure that bad boy.
@@ -65,7 +67,13 @@ EOS
           @structure = __structure(@browser.page)
         end          
       rescue Capybara::Poltergeist::TimeoutError => ex
-        config.dispatch_timeout_handler(ex, @browser, @config.url)
+        if @config.has_timeout_handler?
+          @config.status_handlers[:timeout].each do |th|
+            th.call(ex, @browser, @config.url)
+          end
+        else
+          raise ex
+        end
       end
 
       @structure

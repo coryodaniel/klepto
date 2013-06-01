@@ -8,11 +8,11 @@ module Klepto
       @abort_on_failure = true
       @abort_on_redirect = false
       @after_handlers   = {
-        :each => [], #after each call to
+        :structure => [], #after each call to
         :get  => [], #after GET, before structure
         :abort=> []  #after abort
       }
-      @before_handlers  = {:each => []}
+      @before_handlers  = {:get => []}
       @status_handlers  = {}
       @handlers = {}
     end
@@ -85,7 +85,7 @@ module Klepto
       end
     end
 
-    def after(which = :each, &block)
+    def after(which = :structure, &block)
       @after_handlers[which] ||= []
       @after_handlers[which].push block
     end

@@ -34,9 +34,8 @@ EOS
       @browser.set_headers @config.headers
       #browser.set_driver  config.driver
 
-      # Call before(:each) handlers...
-      @config.before_handlers[:each].each { |bh| 
-        bh.call(url, browser) 
+      @config.before_handlers[:get].each { |bh| 
+        bh.call(@browser,@config.url) 
       }
       
       begin
@@ -44,18 +43,18 @@ EOS
 
         # Fire callbacks on GET
         @config.after_handlers[:get].each do |ah|
-          ah.call(@browser.page, @browser, @config.url)
+          ah.call(@browser, @config.url)
         end
                 
         # Dispatch all the handlers for HTTP Status Codes.
         @browser.statuses.each do |status|
-          @config.dispatch_status_handlers(status, @browser.page)
+          @config.dispatch_status_handlers(status, @browser)
         end
         
         # If the page was not a failure or if not aborting, structure that bad boy.
         if (@browser.failure? && @config.abort_on_failure?) || (@config.abort_on_redirect? && @browser.was_redirected?)
           @config.after_handlers[:abort].each do |ah|
-            ah.call(@browser.page,{
+            ah.call(@browser,{
               browser_failure:    @browser.failure?,
               abort_on_failure:   @config.abort_on_failure?,
               abort_on_redirect:  @config.abort_on_redirect?,
@@ -66,7 +65,7 @@ EOS
           @structure = __structure(@browser.page)
         end          
       rescue Capybara::Poltergeist::TimeoutError => ex
-        config.dispatch_timeout_handler(ex, @config.url)
+        config.dispatch_timeout_handler(ex, @browser, @config.url)
       end
 
       @structure
@@ -85,7 +84,7 @@ EOS
       end
 
       # Call after(:each) handlers...
-      config.after_handlers[:each].each { |ah| ah.call(structure._hash) }
+      config.after_handlers[:structure].each { |ah| ah.call(structure._hash) }
     
       structure._hash
     end

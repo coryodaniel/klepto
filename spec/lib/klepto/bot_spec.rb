@@ -137,7 +137,7 @@ describe Klepto::Bot do
             StatusLog.create message: '200'
           }
 
-          config.after(:each) do |resource|
+          config.after(:structure) do |resource|
             @user = User.new
             @user.name = resource[:name]
             @user.username = resource[:username]
@@ -255,7 +255,7 @@ describe Klepto::Bot do
             permalink '.time a', :css, :attr => :href
           end
 
-          config.after(:each) do |resource|
+          config.after(:structure) do |resource|
             @user = User.new
             @user.name = resource[:name]
             @user.username = resource[:username]

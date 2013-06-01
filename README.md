@@ -171,12 +171,11 @@ end
 ## Callbacks & Processing
 
 * before
-  * :get
-  * :structure  
+  * :get (browser, url)
 * after
-  * :each (resource, Hash) - called for each resource parsed
-  * :get (page, Capybara::Node) - called after each HTTP GET
-  * :abort (page, Capybara::Node) - called after a 4xx or 5xx if config.abort_on_failure is true (default)
+  * :structure (Hash) - receives the structure from the page
+  * :get (browser, url) - called after each HTTP GET
+  * :abort (browser, hash(details)) - called after a 4xx or 5xx if config.abort_on_failure is true (default)
 
 
 ## Stuff I'm going to add.

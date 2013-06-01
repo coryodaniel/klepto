@@ -2,7 +2,7 @@ module Klepto
   class Browser
     include Capybara::DSL
 
-    attr_reader :desired_url
+    attr_reader :url_to_structure
     def initialize(*args)
       Klepto.logger.debug("===== Initializing new browser. =====")
       super

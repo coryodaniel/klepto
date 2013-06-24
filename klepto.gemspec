@@ -17,8 +17,8 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
   
-  gem.add_dependency "poltergeist", '1.1.0'
-  gem.add_dependency "capybara", '2.0.2'
+  gem.add_dependency "poltergeist", '~> 1.3.0'
+  gem.add_dependency "capybara", '~> 2.1.0'
   #gem.add_dependency "docile"
   #gem.add_dependency "thor"
   gem.add_dependency "nokogiri", '~> 1.5.6'

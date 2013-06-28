@@ -32,7 +32,7 @@ EOS
     def __process!
       @structure = nil
       @browser.set_headers @config.headers
-      #browser.set_driver  config.driver
+      @browser.set_driver  @config.driver
 
       @config.before_handlers[:get].each { |bh| 
         bh.call(@browser,@config.url) 

@@ -8,13 +8,13 @@ module Klepto
       super
     end
 
-    # def set_driver(use_driver)
-    #   @use_driver = use_driver
-    # end
+    def set_driver(use_driver)
+      @use_driver = use_driver
+    end
 
-    # def use_driver
-    #   @use_driver || :poltergeist
-    # end
+    def use_driver
+      @use_driver || :poltergeist
+    end
 
     def set_headers(headers)
       page.driver.headers = headers
@@ -57,10 +57,10 @@ module Klepto
       @url_to_structure = _url
       Klepto.logger.debug("Fetching #{@url_to_structure}")
 
-      #Capybara.using_driver use_driver do
+      Capybara.using_driver use_driver do
         visit @url_to_structure
         page
-      #end
+      end
     end
   end
 end

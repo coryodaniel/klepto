@@ -37,7 +37,9 @@ module Klepto
     end
 
     def similar_url?
-      @url_to_structure.downcase == page.current_url.downcase
+      @url_to_structure.downcase == page.current_url.downcase ||
+        "#{@url_to_structure.downcase}/" == page.current_url.downcase ||
+        @url_to_structure.downcase == "#{page.current_url.downcase}/"
     end
     
     # Capybara automatically follows redirects... Checking the page here

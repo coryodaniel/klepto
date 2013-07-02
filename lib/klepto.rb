@@ -4,6 +4,7 @@ require "capybara"
 require "capybara/dsl"
 require 'capybara/poltergeist'
 
+# TODO: This causes issues, obviously when loaded in a test environment running capybara...
 Capybara.run_server = false
 
 Capybara.register_driver :poltergeist do |app|

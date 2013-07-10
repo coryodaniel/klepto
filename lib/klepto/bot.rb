@@ -60,8 +60,12 @@ EOS
           @config.status_handler(status).each {|sh| sh.call(status, @browser) }
         end
         
+        # This is here to debug, having a weird issue with getting a 200 and sometimes
+        #   returning @browser.failure? => true
+        cached_browser_status = @browser.status
+
         # If the page was not a failure or if not aborting, structure that bad boy.
-        if (@browser.failure? && @config.abort_on_failure?) 
+        if (cached_browser_status != 200 && @config.abort_on_failure?) 
           @config.after_handlers[:abort].each {|ah| ah.call(@browser) }
         else
           @structure = __structure(@browser.page)

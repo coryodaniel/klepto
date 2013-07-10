@@ -6,6 +6,8 @@ module Klepto
     def initialize
       @headers = {}
       @abort_on_failure = true
+      @sleep = 0.5
+      @sleep_tries = 10
       @abort_on_redirect = false
       @after_handlers   = {
         :structure => [], #after each call to
@@ -23,6 +25,14 @@ module Klepto
     #   @handlers[group][handler] ||= []
     #   @handlers[group][handler].each{|handler| handler.call(*args)}
     # end
+
+    def sleep(_sleep=nil)
+      @sleep = _sleep
+    end
+
+    def sleep_tries(_sleep_tries=nil)
+      @sleep_tries = _sleep_tries
+    end    
 
     def driver(_driver=nil)
       @default_driver = _driver if _driver

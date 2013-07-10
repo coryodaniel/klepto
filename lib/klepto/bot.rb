@@ -62,7 +62,11 @@ EOS
         
         # This is here to debug, having a weird issue with getting a 200 and sometimes
         #   returning @browser.failure? => true
-        sleep 1        
+        sleep_counter = 0
+        while @browser.status.nil? && sleep_counter < @config.sleep_tries
+          sleep_counter +=1
+          sleep @config.sleep
+        end
 
         # If the page was not a failure or if not aborting, structure that bad boy.
         if (@browser.failure? && @config.abort_on_failure?) 

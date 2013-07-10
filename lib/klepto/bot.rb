@@ -63,9 +63,9 @@ EOS
         # This is here to debug, having a weird issue with getting a 200 and sometimes
         #   returning @browser.failure? => true
         sleep_counter = 0
-        while @browser.status.nil? && sleep_counter < @config.sleep_tries
+        while @browser.failure? && sleep_counter < @config.sleep_tries
           sleep_counter +=1
-          sleep @config.sleep
+          sleep @config.sleep_time
         end
 
         # If the page was not a failure or if not aborting, structure that bad boy.
@@ -73,7 +73,7 @@ EOS
           @config.after_handlers[:abort].each {|ah| ah.call(@browser) }
         else
           @structure = __structure(@browser.page)
-        end          
+        end                  
       rescue Capybara::Poltergeist::TimeoutError => ex
         if @config.has_timeout_handler?
           @config.status_handler(:timeout).each{|th| th.call(ex, @browser, @config.url) }

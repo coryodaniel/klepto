@@ -57,10 +57,9 @@ module Klepto
       @url_to_structure = _url
       Klepto.logger.debug("Fetching #{@url_to_structure}")
 
-      Capybara.using_driver use_driver do
-        visit @url_to_structure
-        page
-      end
+      Capybara.current_driver = Capybara.javascript_driver = use_driver
+      visit @url_to_structure
+      page
     end
   end
 end

@@ -16,6 +16,7 @@ Gem::Specification.new do |gem|
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+  gem.license = 'MIT'
   
   gem.add_dependency "poltergeist", '~> 1.3.0'
   gem.add_dependency "capybara", '~> 2.1.0'

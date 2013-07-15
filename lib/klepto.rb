@@ -12,7 +12,7 @@ Capybara.register_driver :poltergeist do |app|
     js_errors: false
   })
 end
-Capybara.current_driver = :poltergeist
+Capybara.javascript_driver = Capybara.current_driver = :poltergeist
 
 module Klepto
   def self.logger

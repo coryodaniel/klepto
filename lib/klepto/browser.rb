@@ -8,8 +8,8 @@ module Klepto
       super
     end
 
-    def set_driver(use_driver)
-      @use_driver = use_driver
+    def set_driver(using_driver)
+      @use_driver = Capybara.current_driver = Capybara.javascript_driver = using_driver
     end
 
     def use_driver
@@ -55,9 +55,8 @@ module Klepto
     
     def fetch!(_url)
       @url_to_structure = _url
-      Klepto.logger.debug("Fetching #{@url_to_structure}")
+      Klepto.logger.debug("Fetching (#{@use_driver}) #{@url_to_structure}")
 
-      Capybara.current_driver = Capybara.javascript_driver = use_driver
       visit @url_to_structure
       page
     end

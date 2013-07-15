@@ -31,15 +31,17 @@ EOS
     # Structure all the pages
     def __process!
       @structure = nil
+      @browser.set_driver  @config.driver || :poltergeist
       @browser.set_headers @config.headers
-      @browser.set_driver  @config.driver
-
+      
       @config.before_handlers[:get].each { |bh| 
         bh.call(@browser,@config.url) 
       }
       
       begin
         @browser.fetch! @config.url
+        #@browser.page.driver.restart      
+        #@browser.page.driver.quit #rescue nil
 
         # Fire callbacks on GET
         @config.after_handlers[:get].each do |ah|

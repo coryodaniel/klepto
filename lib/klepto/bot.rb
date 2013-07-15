@@ -39,9 +39,8 @@ EOS
       }
       
       begin
+        @browser.page.driver.restart
         @browser.fetch! @config.url
-        #@browser.page.driver.restart      
-        #@browser.page.driver.quit #rescue nil
 
         # Fire callbacks on GET
         @config.after_handlers[:get].each do |ah|
@@ -83,6 +82,10 @@ EOS
           raise ex
         end
       end
+
+      # @browser.page.driver.client.stop
+      # @browser.page.driver.server.stop
+      # @browser.page.driver.quit #rescue nil 
 
       @structure
     end

@@ -7,16 +7,28 @@ describe Klepto::Bot do
         before(:each) do
           @bot = Klepto::Bot.new("https://www.twitter.com/justinbieber"){
             name      'h1.fullname'
-            set :image_status_id => lambda{|doc|
-              doc.first('.photo-list a')['data-status-id'].to_i
+            set :status_id => lambda{|doc|
+              doc.first('.stream-items li.stream-item')['data-item-id'].to_i
             }
+
+            got_the_node(lambda{|bot| "[data-item-id='#{bot.get(:status_id)}']"}) do |node|
+              true
+            end
+            get_the_id 'a' do |node|
+              get(:status_id)
+            end
           }      
         end
 
         it 'should have the variables' do
-          @bot.get(:image_status_id).should be_kind_of(Integer)
-          @bot.get(:image_status_id).should_not be(0)
-        end      
+          @bot.get(:status_id).should be_kind_of(Integer)
+          @bot.get(:status_id).should_not be(0)
+        end   
+
+        it 'should be able to structure with the variable' do
+          @bot.structure[:get_the_id].should be @bot.get(:status_id)
+          @bot.structure[:got_the_node].should be true
+        end   
       end      
       describe 'setting a variable' do
         before(:each) do

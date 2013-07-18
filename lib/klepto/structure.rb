@@ -9,6 +9,7 @@ module Klepto
     attr_reader :_parent
     attr_reader :_hash
     attr_reader :_context
+    attr_accessor :_bot
 
     def initialize(_context=nil, _parent=nil)
       Klepto.logger.debug("\tnew Structure (#{_parent}) -> (#{_context})")
@@ -31,6 +32,10 @@ module Klepto
       options[:limit]   ||= nil
       options[:parser]  ||= nil
       selector          = args.shift
+
+      if selector.is_a?(Proc)
+        selector = selector.call(_bot)
+      end
 
       if !block_given? && options[:parser]
         block = options[:parser].new

@@ -3,17 +3,17 @@ module Klepto
     attr_reader :config, :vars
 
     def set(hash)
-      @vars = @vars.merge(hash)
+      @vars = vars.merge(hash)
     end 
 
     def get(key)
-      val = @vars[key]
+      val = vars[key]
       
       if val.is_a? Proc
-        val.call @browser.page
-      else
-        val
+        val = val.call(@browser.page)
+        set(key => val)
       end
+      val
     end
 
     def initialize(url=nil, &block)
@@ -107,6 +107,7 @@ EOS
 
     def __structure(context)
       structure = Structure.new(context)
+      structure._bot = self
 
       # A queue of DSL instructions
       queue.each do |instruction|

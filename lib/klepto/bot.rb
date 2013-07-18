@@ -1,9 +1,24 @@
 module Klepto
   class Bot
-    attr_reader :config
+    attr_reader :config, :vars
+
+    def set(hash)
+      @vars = @vars.merge(hash)
+    end 
+
+    def get(key)
+      val = @vars[key]
+      
+      if val.is_a? Proc
+        val.call @browser.page
+      else
+        val
+      end
+    end
 
     def initialize(url=nil, &block)
       @config = Klepto::Config.new
+      @vars   = {}
       @config.url url
       @queue  = []
       @browser = Klepto::Browser.new

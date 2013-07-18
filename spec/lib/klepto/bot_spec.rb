@@ -2,6 +2,36 @@ require 'spec_helper'
 
 describe Klepto::Bot do  
   describe 'Klepto::Bot.new' do
+    describe 'vars' do
+      describe 'structuring with a variable' do
+        before(:each) do
+          @bot = Klepto::Bot.new("https://www.twitter.com/justinbieber"){
+            name      'h1.fullname'
+            set :image_status_id => lambda{|doc|
+              doc.first('.photo-list a')['data-status-id'].to_i
+            }
+          }      
+        end
+
+        it 'should have the variables' do
+          @bot.get(:image_status_id).should be_kind_of(Integer)
+          @bot.get(:image_status_id).should_not be(0)
+        end      
+      end      
+      describe 'setting a variable' do
+        before(:each) do
+          @bot = Klepto::Bot.new("https://www.twitter.com/justinbieber"){
+            name      'h1.fullname'
+            set :cool => 'chickens'
+          }      
+        end
+
+        it 'should have the variables' do
+          @bot.get(:cool).should eq 'chickens'
+        end      
+      end
+    end
+
     describe 'create a bot with a redirect' do
       describe 'that aborts on redirect' do
         before(:each) do
